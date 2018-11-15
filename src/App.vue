@@ -9,10 +9,14 @@
 
 <script type="text/ecmascript-6">
   import MHead from 'components/m-header/m-header'
+  import {isiphoneX} from 'common/js/util'
 
   export default {
     components: {
       MHead
+    },
+    mounted() {
+      isiphoneX()
     }
   }
 </script>

@@ -75,7 +75,7 @@ export default {
         }else{
           scrollleft = 0
         }
-        this.tab.scrollTo(-scrollleft, 0, 400)
+        this.tab.scrollTo(-scrollleft, 0, 300)
       }
 
       if(windowLeft + domWidth*3/2 > windowWidth) {
@@ -84,7 +84,7 @@ export default {
         }else{
           scrollleft = scrollleft + leftPadding
         }
-        this.tab.scrollTo(-scrollleft, 0, 400)
+        this.tab.scrollTo(-scrollleft, 0, 300)
       }
     }
   }
