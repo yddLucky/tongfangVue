@@ -23,6 +23,21 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       app.use(bodyParser.urlencoded({extended: true}))
       const querystring = require('querystring')
 
+       app.get('/api/getPremium', function (req, res) {
+        const url = 'https://esales-dev.aegonthtf.com/sales/newpreference_calculatePremium.action'
+        axios.post(url, {
+          headers: {
+            referer: 'https://esales-dev.aegonthtf.com/',
+            host: 'esales-dev.aegonthtf.com'
+          },
+          params: req.query
+        }).then((response) => {
+          res.json(response.data)
+        }).catch((e) => {
+          console.log(e)
+        })
+      })
+
       app.get('/api/getDiscList', function (req, res) {
         const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
         axios.get(url, {
