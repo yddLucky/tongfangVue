@@ -4,7 +4,7 @@
       <div>
         <!-- banner -->
         <div class="banner">
-          <img src="./banner.jpg" draggable="false">
+          <img src="./banner.jpg" draggable="false" @load="refresh">
         </div>
         <!-- 产品优势 -->
         <div class="advantage border-bottom">
@@ -50,7 +50,7 @@
           </div>
         </div>
         <div class="description">
-          <img src="https://esales.aegonthtf.com/sylifetime/tyimageL.jpg" alt="">
+          <img src="https://esales.aegonthtf.com/sylifetime/tyimageL.jpg" @load="refresh">
         </div>
       </div>
     </scroll>
@@ -73,17 +73,18 @@
 import Loading from 'base/loading/loading'
 import Scroll from 'base/scroll/scroll'
 import Tab from 'base/tab/tab'
+import {isiphoneX} from 'common/js/util'
 
 export default {
   data() {
     return {
       value: '',
       advantages: [
-        '70、80周岁可返回保费',
-        '70、80周岁可返回保费',
-        '70、80周岁可返回保费',
-        '70、80周岁可返回保费',
-        '70、80周岁可返回保费'
+        '70、80周岁可返回',
+        '70、80周岁可返回',
+        '70、80周岁可返回',
+        '70、80周岁可返回',
+        '70、80周岁可返回'
       ],
       tabs: [
         {
@@ -115,6 +116,9 @@ export default {
       current: 0
     }
   },
+  mounted() {
+    isiphoneX()
+  },
   methods: {
     changePlan(index) {
       this.current = index
@@ -123,6 +127,9 @@ export default {
       this.$router.push({
         path: '/premium'
       })
+    },
+    refresh() {
+      this.$refs.scroll.refresh()
     }
   },
   components: {
@@ -139,12 +146,13 @@ export default {
   .fix-iphonex-bottom
     .preview
       bottom: ($bottom + $under-btn-height)px
-
+      .under-btn
+        bottom: ($bottom + 0)px
   .preview
     position: fixed
     width: 100%
     top: 44px
-    bottom: 0
+    bottom: ($under-btn-height + 0)px
     .preview-content
       height: 100%
       overflow: hidden
@@ -204,11 +212,13 @@ export default {
         img
           width: 100%
     .under-btn
-      display: fixed
+      position: fixed
       left: 0
       bottom: 0
       height: ($under-btn-height + 0)px
       font-size: 16px
+      width: 100%
+      background-color: #fff
       &>div
         display: flex
         .service

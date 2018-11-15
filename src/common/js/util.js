@@ -30,7 +30,6 @@ export function isiphoneX() {
   const isIphoneX = window.devicePixelRatio && window.devicePixelRatio === 3 && window.screen.width === 375 && testUA('iPhone')
   if (isIphoneX) {
     check()
-    window.onscroll = debounce(check, 200)
   }
 
   function check () {
