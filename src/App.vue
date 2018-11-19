@@ -13,8 +13,10 @@
     components: {
       MHead
     },
-    mounted() {
-      isiphoneX()
+    watch:{
+      $route(to,from){
+        isiphoneX()
+      }
     }
   }
 </script>

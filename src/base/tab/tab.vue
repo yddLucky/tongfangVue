@@ -58,7 +58,8 @@ export default {
     _initTab() {
       this.tab = new BScroll(this.$refs.tab, {
         scrollX: true,
-        scrollY: false
+        scrollY: false,
+        click: true
       })
     },
     _scroll(index) {
