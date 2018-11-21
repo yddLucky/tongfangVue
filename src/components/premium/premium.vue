@@ -5,7 +5,26 @@
       <select-bar :data="dataSelect" :selected="selected" @changeSelect="changeSelect"></select-bar>
       <area-l></area-l>
       <occupation></occupation>
-      <age></age>
+      <age 
+          :age = appAge
+          :birthday = appBirthday
+          :maxAge = '40' 
+          :minAge = '18' 
+          :updateAge = '30'
+          @setBirthday = 'setAppBirthday'
+          @setAge = 'setAppAge'
+          >
+      </age>
+      <age 
+          :age = insAge
+          :birthday = insBirthday
+          :maxAge = '17' 
+          :minAge = '0' 
+          :updateAge = '10'
+          @setBirthday = 'setInsBirthday'
+          @setAge = 'setInsAge'
+          >
+      </age>
     </div>
   </div>
 </template>
@@ -16,6 +35,7 @@ import SelectBar from 'base/selectBar/selectBar'
 import AreaL from 'base/area/area'
 import Occupation from 'base/occupation/occupation'
 import Age from 'base/age/age'
+import { mapGetters, mapMutations} from 'vuex'
 
 export default {
   data() {
@@ -31,10 +51,36 @@ export default {
       selected: '请选择'
     }
   },
+  computed: {
+    ...mapGetters([
+      'appAge',
+      'appBirthday',
+      'insAge',
+      'insBirthday'
+    ])
+  },
   methods: {
     changeSelect(selected) {
       this.selected = selected
-    }
+    },
+    setAppBirthday(res) {
+      this.setAppBirthday(res)
+    },
+    setAppAge(res) {
+      this.setAppAge(res)
+    },
+    setInsBirthday(res) {
+      this.setInsBirthday(res)
+    },
+    setInsAge(res) {
+      this.setInsAge(res)
+    },
+    ...mapMutations({
+      setAppAge: 'SET_APPAGE',
+      setAppBirthday: 'SET_APPBIRTHDAY',
+      setInsAge: 'SET_INSAGE',
+      setInsBirthday: 'SET_INSBIRTHDAY'
+    })
   },
   components: {
     Plan,

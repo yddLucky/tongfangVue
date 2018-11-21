@@ -2,39 +2,120 @@
   <div @click='showDatePicker' class="area-occupation-age border-bottom">
     <div class="tit">出生日期</div>
     <div class="select">
-      <span :class="{'primary': selectedText === '请选择' }">{{selectedText}}</span><i class="el-icon-caret-right"></i>
+      <span :class="{'primary': selectedText === '请选择' }">{{selectedText}}({{age}}周岁)</span><i class="el-icon-caret-right"></i>
     </div>
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
-import { mapGetters, mapMutations} from 'vuex'
 
 export default {
+  props: {
+    age: {
+      type: Number,
+      default: 0
+    },
+    birthday: {
+      type: String,
+      default: ''
+    },
+    maxAge: {
+      type: Number,
+      default: 50
+    },
+    minAge: {
+      type: Number,
+      default: 0
+    },
+    updateAge: {
+      type: Number,
+      default: 30
+    }
+  },
   data() {
     return {
       selectedText: '请选择'
     }
   },
-  computed: {
-    ...mapGetters([
-      'appAge'
-    ])
-  },
   mounted() {
     this.now = new Date()
-    if (this.appAge) {
-      this.selectedText = this.appAge
-      this.now = new Date(this.appAge)
+    if (this.birthday) {
+      this.selectedText = this.birthday
+      this.now = new Date(this.birthday)
     }
   },
   methods: {
+    createData(y){
+      const newDate = new Date()
+      const year = newDate.getFullYear()
+      let month = newDate.getMonth() + 1
+      if (parseInt(month) < 10) {
+        month = "0" + month
+      }
+      let day = newDate.getDate()
+      if (parseInt(day) < 10) {
+        day = "0" + day
+      }
+      return (parseInt(year)-y)+"-"+month+"-"+day    
+    },
+    maxMinAge(max,min) {
+      // max是最小年龄 min是最大年龄
+      const newDate = new Date()
+      const year = newDate.getFullYear()-min-1
+
+      //插件会自己增加一个月不用+1
+      const month = newDate.getMonth()+1
+      const day = newDate.getDate()
+      let mindate = new Date(year+"/"+month+"/"+day)
+      mindate = new Date(mindate.getTime() + 24*60*60*1000)
+      let maxdate
+      if(max>0){
+        let yearMax=newDate.getFullYear()-max
+        maxdate = new Date(yearMax+"/"+month+"/"+day)
+        maxdate=new Date(maxdate.getTime())
+      }else{
+        maxdate=new Date(newDate.getTime() - 30*24*60*60*1000)
+      }
+      return {
+        mindate: mindate,
+        maxdate: maxdate
+      }
+    },
+    getAgeByBirth(birthday) {
+      if (!(/^(\d{4})(-)(\d{2})(-)(\d{2})$/.test(birthday))) {
+        return ""
+      }
+      
+      let age
+      const year = birthday.substring(0,birthday.indexOf("-"))*1
+      const month = birthday.substring(birthday.indexOf("-")+1,birthday.lastIndexOf("-"))*1
+      const day = birthday.substring(birthday.lastIndexOf("-")+1)*1
+      const date = new Date()
+      const currentYear = date.getFullYear()
+      const currentMonth = date.getMonth() + 1
+      const cuttentDay = date.getDate()
+      
+      if (month > currentMonth) {
+        age =  currentYear - year - 1
+      } else if (month < currentMonth) {
+        age = currentYear - year
+      } else {
+        if (day > cuttentDay) {
+          age = currentYear - year - 1
+        } else {
+          age = currentYear - year
+        }
+      }
+      return age > 0 ? age : 0
+    },
     showDatePicker() {
       if (!this.datePicker) {
+        const ageRange = this.maxMinAge(this.minAge, this.maxAge)
+
         this.datePicker = this.$createDatePicker({
           title: '请选择出生日期',
-          min: new Date(1786, 8, 8),
-          max: new Date(2020, 9, 20),
+          min: ageRange.mindate,
+          max: ageRange.maxdate,
           value: this.now,
           format: {
             year: 'YYYY年',
@@ -46,18 +127,13 @@ export default {
           onCancel: this.cancelHandle
         })
       }
+      const updateValue = this.selectedText !== '请选择'? new Date(this.selectedText) : new Date(this.createData(this.updateAge))
       this.datePicker.$updateProps({
-        value: new Date(this.selectedText)
+        value: updateValue
       })
       this.datePicker.show()
     },
     selectHandle(date, selectedVal, selectedText) {
-      this.$createDialog({
-        type: 'warn',
-        content: `Selected Item: <br/> - date: ${date} <br/> - value: ${selectedVal.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
-        icon: 'cubeic-alert'
-      }).show()
-      
       let newText = []
       selectedVal.forEach(item => {
         if(parseInt(item) < 10) {
@@ -66,13 +142,13 @@ export default {
         newText.push(item.toString())
       })
       this.selectedText = newText.join('-')
-      this.setAppAge(this.selectedText)
+      // 设置显示年龄2018-11-21
+      this.$emit('setBirthday', this.selectedText)
+      // 设置年龄数据18
+      this.$emit('setAge', this.getAgeByBirth(this.selectedText))
     },
     cancelHandle() {
-    },
-    ...mapMutations({
-      setAppAge: 'SET_APPAGE'
-    })
+    }
   }
 }
 </script>

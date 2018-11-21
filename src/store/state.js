@@ -16,7 +16,10 @@ const state = {
   favoriteList: [],
   area: {},
   occupation: {},
-  appAge: ''
+  appAge: 0,
+  appBirthday: '',
+  insAge: 0,
+  insBirthday: ''
 }
 
 export default state

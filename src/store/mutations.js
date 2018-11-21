@@ -45,6 +45,15 @@ const mutations = {
   },
   [types.SET_APPAGE](state, appAge) {
     state.appAge = appAge
+  },
+  [types.SET_APPBIRTHDAY](state, appBirthday) {
+    state.appBirthday = appBirthday
+  },
+  [types.SET_INSAGE](state, insAge) {
+    state.insAge = insAge
+  },
+  [types.SET_INSBIRTHDAY](state, insBirthday) {
+    state.insBirthday = insBirthday
   }
 }
 

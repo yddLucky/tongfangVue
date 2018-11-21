@@ -2,7 +2,7 @@
   <div @click='showAddressPicker' class="area-occupation-age border-bottom">
     <div class="tit">投保地区</div>
     <div class="select">
-      <span :class="{'primary': selectedText === '请选择' }">{{selectedText}}</span><i class="el-icon-caret-right"></i>
+      <span :class="{'primary': selectedText === '请选择' }" ref="selected">{{selectedText}}</span><i class="el-icon-caret-right"></i>
     </div>
   </div>
 </template>
@@ -31,6 +31,9 @@ export default {
   },
   methods: {
     getArea() {
+      if(this.$refs.selected.offsetHeight > 16) {
+        this.$refs.selected.classList.add('left')
+      }
       getArea().then((res) => {
         // 数据结构
         // [
@@ -104,7 +107,9 @@ export default {
               })
             }
           })
-          this.selectedText = selectedTextArr.join(" ")
+          if(selectedTextArr[0]){
+            this.selectedText = selectedTextArr.join(" ")
+          }
         }else{
           this.$createDialog({
             type: 'alert',
