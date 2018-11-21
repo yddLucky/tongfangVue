@@ -36,6 +36,15 @@ const mutations = {
   },
   [types.SET_FAVORITE_LIST](state, list) {
     state.favoriteList = list
+  },
+  [types.SET_AREA](state, area) {
+    state.area = area
+  },
+  [types.SET_OCCUPATION](state, occupation) {
+    state.occupation = occupation
+  },
+  [types.SET_APPAGE](state, appAge) {
+    state.appAge = appAge
   }
 }
 

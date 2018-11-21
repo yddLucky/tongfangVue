@@ -21,3 +21,9 @@ export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
 export const SET_PLAY_HISTORY = 'SET_PLAY_HISTORY'
 
 export const SET_FAVORITE_LIST = 'SET_FAVORITE_LIST'
+
+export const SET_AREA = 'SET_AREA'
+
+export const SET_OCCUPATION = 'SET_OCCUPATION'
+
+export const SET_APPAGE = 'SET_APPAGE'

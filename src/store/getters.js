@@ -35,3 +35,9 @@ export const favoriteList = (state) => {
     return new Song(song)
   })
 }
+
+export const area = state => state.area
+
+export const occupation = state => state.occupation
+
+export const appAge = state => state.appAge

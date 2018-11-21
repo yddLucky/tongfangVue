@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tabTit">保障详情</div>
+    <div class="tabTit">{{tit}}</div>
     <!-- 计划选择项 -->
     <tab :data="tabs" :current="current" @chooseTab="changePlan" type="gray"></tab>
     <!-- 计划选择描述 -->
@@ -40,6 +40,12 @@
 import Tab from 'base/tab/tab'
 
 export default {
+  props: {
+    tit: {
+      type: String,
+      default: '保障详情'
+    }
+  },
   data() {
     return {
       tabs: [

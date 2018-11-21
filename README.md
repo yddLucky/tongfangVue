@@ -50,7 +50,9 @@ obj: {
 
 `getBoundingClientRect().left | right | top | bottom`
 
+### 点击穿透
 
+`pointer-events: none`
 
 
 

@@ -181,6 +181,8 @@ export default {
             position: relative
             box-sizing: border-box
             vertical-align: super
+            &:last-child
+              padding-right: 0
             &.current
               color: #fa9128
               .text:after
@@ -191,4 +193,9 @@ export default {
                 width: 25px
                 left: 50%
                 margin-left: -20px
+      &.more
+        .nav-tabs
+          padding: 0 20px
+          .tabs
+            padding-right: 40px
 </style>

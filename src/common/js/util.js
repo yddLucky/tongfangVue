@@ -47,3 +47,17 @@ export function isiphoneX() {
     return navigator.userAgent.indexOf(str) > -1
   }
 }
+
+export function getRootPath(){
+  const strFullPath = window.document.location.href//当前地址
+  const strPath = window.document.location.pathname
+  const pos = strFullPath.indexOf(strPath)
+  const prePath = strFullPath.substring(0,pos)//上下文根之前
+  const postPath = strPath.substring(0,strPath.substr(1).indexOf('/')+1)//上下文根
+  
+  return prePath + '/sales'
+}
+
+export function trim(str) {
+  return str.replace(/(^\s*)|(\s*$)/g, "")
+}
