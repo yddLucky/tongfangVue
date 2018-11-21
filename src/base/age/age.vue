@@ -1,6 +1,6 @@
 <template>
   <div @click='showDatePicker' class="area-occupation-age border-bottom">
-    <div class="tit">出生日期</div>
+    <div class="tit">{{tit}}</div>
     <div class="select">
       <span :class="{'primary': selectedText === '请选择' }">{{selectedText}}({{age}}周岁)</span><i class="el-icon-caret-right"></i>
     </div>
@@ -11,6 +11,10 @@
 
 export default {
   props: {
+    tit: {
+      type: String,
+      default: '出生日期'
+    },
     age: {
       type: Number,
       default: 0
