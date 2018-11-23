@@ -1,71 +1,76 @@
 <template>
   <div class="premium">
-    <plan tit='请选择保障计划'></plan>
-    <div class="information">
-      <select-bar
-        tit="保障期限"
-        :data="coverPeriod.selectList" 
-        :selected="coverPeriod.selected" 
-        @select="selectedCoverPeriod"
-      ></select-bar>
-      <select-bar
-        tit="缴费期限"
-        :data="paymentPeriod.selectList" 
-        :selected="paymentPeriod.selected" 
-        @select="selectedPaymentPeriod"
-      ></select-bar>
-      <area-occupation
-        tit="投保地区"
-        type='area'
-        :data="areaList"
-        :selected="area"
-        @select="selectedArea"
-      ></area-occupation>
-      <area-occupation
-        tit="投保人职业"
-        type='occupation'
-        :data="occupationList"
-        :selected="occupation"
-        @select="selectedOccupation"
-      ></area-occupation>
-      <age 
-        :age=appAge
-        :birthday=appBirthday
-        :maxAge='40' 
-        :minAge='18' 
-        :updateAge='30'
-        @setBirthday='setAppBirthday'
-        @setAge='setAppAge'
-      ></age>
-      <age 
-        :age=insAge
-        :birthday=insBirthday
-        :maxAge='17' 
-        :minAge='0' 
-        :updateAge='10'
-        @setBirthday='setInsBirthday'
-        @setAge='setInsAge'
-      ></age>
-      <input-bar
-        ref='appName'
-        tit="投保人姓名"
-        :data=appName
-        type="text"
-        errMsg="请输入正确的投保人姓名"
-        :maxlength="10"
-        @blur="changeAppName"
-      ></input-bar>
-      <check-box
-        tit="性别"
-        :data="sexList"
-        :checked=appSex
-        @checked="changeAppSex"
-      ></check-box>
-    </div>
+    <scroll class="preview-content">
+      <div>
+        <plan tit='请选择保障计划'></plan>
+        <div class="information">
+          <select-bar
+            tit="保障期限"
+            :data="coverPeriod.selectList" 
+            :selected="coverPeriod.selected" 
+            @select="selectedCoverPeriod"
+          ></select-bar>
+          <select-bar
+            tit="缴费期限"
+            :data="paymentPeriod.selectList" 
+            :selected="paymentPeriod.selected" 
+            @select="selectedPaymentPeriod"
+          ></select-bar>
+          <area-occupation
+            tit="投保地区"
+            type='area'
+            :data="areaList"
+            :selected="area"
+            @select="selectedArea"
+          ></area-occupation>
+          <area-occupation
+            tit="投保人职业"
+            type='occupation'
+            :data="occupationList"
+            :selected="occupation"
+            @select="selectedOccupation"
+          ></area-occupation>
+          <age 
+            :age=appAge
+            :birthday=appBirthday
+            :maxAge='40' 
+            :minAge='18' 
+            :updateAge='30'
+            @setBirthday='setAppBirthday'
+            @setAge='setAppAge'
+          ></age>
+          <age 
+            :age=insAge
+            :birthday=insBirthday
+            :maxAge='17' 
+            :minAge='0' 
+            :updateAge='10'
+            @setBirthday='setInsBirthday'
+            @setAge='setInsAge'
+          ></age>
+          <input-bar
+            ref='appName'
+            tit="投保人姓名"
+            :data=appName
+            type="text"
+            errMsg="请输入正确的投保人姓名"
+            :maxlength="10"
+            @blur="changeAppName"
+          ></input-bar>
+          <check-box
+            tit="性别"
+            :data="sexList"
+            :checked=appSex
+            @checked="changeAppSex"
+          ></check-box>
+        </div>
+      </div>
+    </scroll>
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
+import Scroll from 'base/scroll/scroll'
 import Plan from 'base/plan/plan'
 import SelectBar from 'base/select/select'
 import AreaOccupation from 'base/area/area'
@@ -193,6 +198,7 @@ export default {
     })
   },
   components: {
+    Scroll,
     Plan,
     SelectBar,
     AreaOccupation,
@@ -204,7 +210,19 @@ export default {
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-.premium
-  .information
-    padding: 0 20px
+ @import "~common/stylus/variable"
+  
+  .fix-iphonex-bottom
+    .premium
+      bottom: ($bottom + 0)px
+  .premium
+    position: fixed
+    width: 100%
+    top: 44px
+    bottom: 0
+    .preview-content
+      height: 100%
+      overflow: hidden
+      .information
+        padding: 0 20px 30px
 </style>

@@ -62,6 +62,29 @@ obj: {
 
 ##better-scroll
 
+###初始化使用
+
+html
+
+`<div class="premium">
+    <scroll class="preview-content">
+    </scroll>
+</div>`
+
+css
+
+`.premium
+  position: fixed
+  width: 100%
+  top: 44px
+  bottom: 0
+  .preview-content
+    height: 100%
+    overflow: hidden`
+
+[注意]：其中[top]和[bottom]将盒子的大小给限定住了，这个参数都是必须的
+
+
 ### mouseWheel 滚轮滚动配置
 
 ### scrollbar 滚动条配置
