@@ -69,6 +69,13 @@ export default {
   .select
     position: relative
     flex: 1 1 auto
+    .cloud
+      position: absolute
+      z-index: -1
+      display: block
+      height: 22px
+      border-radius: 20px
+      background-color: #c8ebff
     ul
       position: relative
       display: flex
@@ -77,12 +84,6 @@ export default {
       flex-wrap: wrap
       justify-content: flex-end
       width: 100%
-    .cloud
-      position: absolute
-      display: block
-      height: 22px
-      border-radius: 20px
-      background-color: #c8ebff
     li
       flex: 0 0 auto
       padding: 0 20px
