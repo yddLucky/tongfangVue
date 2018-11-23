@@ -1,6 +1,12 @@
 import * as types from './mutation-types'
 
 const mutations = {
+  [types.SET_APPNAME](state, appName) {
+    state.appName = appName
+  },
+  [types.SET_APPSEX](state, appSex) {
+    state.appSex = appSex
+  },
   [types.SET_AREA](state, area) {
     state.area = area
   },
@@ -18,6 +24,12 @@ const mutations = {
   },
   [types.SET_INSBIRTHDAY](state, insBirthday) {
     state.insBirthday = insBirthday
+  },
+  [types.SET_COVERPERIOD](state, coverPeriod) {
+    state.coverPeriod = coverPeriod
+  },
+  [types.SET_PAYMENTPERIOD](state, paymentPeriod) {
+    state.paymentPeriod = paymentPeriod
   }
 }
 

@@ -1,5 +1,10 @@
-export const playMode = {
-  sequence: 0,
-  loop: 1,
-  random: 2
-}
+export const sexList = [
+  {
+    value: 0,
+    text: '男'
+  },
+  {
+    value: 1,
+    text: '女'
+  }
+]

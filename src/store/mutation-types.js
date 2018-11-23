@@ -1,3 +1,7 @@
+export const SET_APPNAME = 'SET_APPNAME'
+
+export const SET_APPSEX = 'SET_APPSEX'
+
 export const SET_AREA = 'SET_AREA'
 
 export const SET_OCCUPATION = 'SET_OCCUPATION'
@@ -9,3 +13,7 @@ export const SET_APPBIRTHDAY = 'SET_APPBIRTHDAY'
 export const SET_INSAGE = 'SET_INSAGE'
 
 export const SET_INSBIRTHDAY = 'SET_INSBIRTHDAY'
+
+export const SET_COVERPERIOD = 'SET_COVERPERIOD'
+
+export const SET_PAYMENTPERIOD = 'SET_PAYMENTPERIOD'

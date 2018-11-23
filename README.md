@@ -44,7 +44,29 @@ fun: {
 obj: {
 	type: Object,
 	default: () => ({})
-}
+}`
+
+[type]支持多个数据格式，用|分隔
+
+`obj: {
+	type: Object | Boolean,
+	default: () => ({})
+}`
+
+##父组件传值
+
+如果是固定的boolean或者数值，不想在data里面定义的参数，props里面又设置了默认的type，需要使用[:]来绑定
+
+`<scroll :click="true"></scroll>`
+
+
+##better-scroll
+
+### mouseWheel 滚轮滚动配置
+
+### scrollbar 滚动条配置
+
+
 
 ##获取元素对于浏览器的位子
 

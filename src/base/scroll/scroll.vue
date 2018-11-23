@@ -43,6 +43,18 @@
       direction: {
         type: String,
         default: DIRECTION_V
+      },
+      scrollbar: {
+        type: Boolean,
+        default: true 
+      },
+      mouseWheel: {
+        type: Boolean | Object,
+        default: () => ({
+          speed: 20,
+          invert: false,
+          easeTime: 300
+        })
       }
     },
     mounted() {
@@ -58,6 +70,8 @@
         this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
           click: this.click,
+          scrollbar: this.scrollbar,
+          mouseWheel: this.mouseWheel,
           eventPassthrough: this.direction === DIRECTION_V ? DIRECTION_H : DIRECTION_V
         })
 

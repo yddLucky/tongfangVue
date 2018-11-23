@@ -1,6 +1,6 @@
 <template>
-  <div @click='showAddressPicker' class="area-occupation-age border-bottom">
-    <div class="tit">投保地区</div>
+  <div @click='showAddressPicker' class="selectBar border-bottom">
+    <div class="tit">{{tit}}</div>
     <div class="select">
       <span :class="{'primary': selectedText === '请选择' }" ref="selected">{{selectedText}}</span><i class="el-icon-caret-right"></i>
     </div>
@@ -8,34 +8,55 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import {getArea} from 'api/area'
 import {trim} from 'common/js/util'
-import { mapGetters, mapMutations} from 'vuex'
 
 let selectedIndex = [0,0,0]
 let selectedTextArr = []
 
 export default {
+  props: {
+    type: {
+      type: String,
+      default: 'area'
+    },
+    tit: {
+      type: String,
+      default: '投保地区'
+    },
+    data: {
+      type: Object,
+      default: () => ({})
+    },
+    selected: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     return {
       selectedText: '请选择'
     }
   },
-  computed: {
-    ...mapGetters([
-      'area'
-    ])
-  },
   mounted() {
-    this.getArea()
+    this._initJoiner()
+    this._initData()
   },
   methods: {
-    getArea() {
-      if(this.$refs.selected.offsetHeight > 16) {
-        this.$refs.selected.classList.add('left')
-      }
-      getArea().then((res) => {
-        // 数据结构
+    _initJoiner() {
+      this.joiner = this.type === 'area' ? ' ' : '/'
+    },
+    _changeSelected() {
+      // 内容左右对齐样式修改
+      setTimeout(()=> {
+        if(this.$refs.selected && this.$refs.selected.offsetHeight > 16) {
+          this.$refs.selected.classList.add('left')
+        }else{
+          this.$refs.selected.classList.remove('left')
+        }
+      }, 20)
+    },
+    _initData() {
+      // 数据结构
         // [
         //   {
         //     value: '110000',
@@ -52,86 +73,72 @@ export default {
         //     ]
         //   }
         // ]
-        const data = res[0]
-        this.firstAreaList = data.level1
-        this.secondAreaList = data.level2
-        this.thirdAreaList = data.level3
-        this.addressData = []
-        if(this.firstAreaList) {
-          this.firstAreaList.forEach((item1,index) => {
-            if(this.area.province) {
-              if(this.area.province === item1.code) {
-                selectedIndex[0] = index
-                selectedTextArr[0] = trim(item1.name)
-              }
+      this.firstAreaList = this.data.level1
+      this.secondAreaList = this.data.level2
+      this.thirdAreaList = this.data.level3
+      this.addressData = []
+      if(this.firstAreaList) {
+        this.firstAreaList.forEach((item1,index) => {
+          if(this.selected.level1) {
+            if(this.selected.level1 === item1.code) {
+              selectedIndex[0] = index
+              selectedTextArr[0] = trim(item1.name)
             }
-            let obj1 = {
-              value: item1.code,
-              text: trim(item1.name),
-              children: []
-            }
-            this.addressData.push(obj1)
-            if(this.secondAreaList) {
-              this.secondAreaList.forEach((item2, index) => {
-                if(this.area.city) {
-                  if(this.area.city === item2.code) {
-                    selectedIndex[1] = index
-                    selectedTextArr[1] = trim(item2.name)
-                  }
-                }
-                if(item2.parentCode === item1.code) {
-                  let obj2 = {
-                    value: item2.code,
-                    text: trim(item2.name),
-                    children: []
-                  }
-                  obj1.children.push(obj2)
-                  if(this.thirdAreaList) {
-                    this.thirdAreaList.forEach((item3, index) => {
-                      if(this.area.distinct) {
-                        if(this.area.distinct === item3.code) {
-                          selectedIndex[2] = index
-                          selectedTextArr[2] = trim(item3.name)
-                        }
-                      }
-                      if(item3.parentCode === item2.code) {
-                        let obj3 = {
-                          value: item3.code,
-                          text: trim(item3.name)
-                        }
-                        obj2.children.push(obj3)
-                      }
-                    })
-                  }
-                }
-              })
-            }
-          })
-          if(selectedTextArr[0]){
-            this.selectedText = selectedTextArr.join(" ")
           }
-        }else{
-          this.$createDialog({
-            type: 'alert',
-            title: '',
-            content: '网络异常，请刷新重试',
-            icon: ''
-          }).show()
-          return
+          let obj1 = {
+            value: item1.code,
+            text: trim(item1.name),
+            children: []
+          }
+          this.addressData.push(obj1)
+          if(this.secondAreaList) {
+            this.secondAreaList.forEach((item2, index) => {
+              if(this.selected.level2) {
+                if(this.selected.level2 === item2.code) {
+                  selectedIndex[1] = index
+                  selectedTextArr[1] = trim(item2.name)
+                }
+              }
+              if(item2.parentCode === item1.code) {
+                let obj2 = {
+                  value: item2.code,
+                  text: trim(item2.name),
+                  children: []
+                }
+                obj1.children.push(obj2)
+                if(this.thirdAreaList) {
+                  this.thirdAreaList.forEach((item3, index) => {
+                    if(this.selected.level3) {
+                      if(this.selected.level3 === item3.code) {
+                        selectedIndex[2] = index
+                        selectedTextArr[2] = trim(item3.name)
+                      }
+                    }
+                    if(item3.parentCode === item2.code) {
+                      let obj3 = {
+                        value: item3.code,
+                        text: trim(item3.name)
+                      }
+                      obj2.children.push(obj3)
+                    }
+                  })
+                }
+              }
+            })
+          }
+        })
+        if(selectedTextArr[0]){
+          this.selectedText = selectedTextArr.join(this.joiner)
         }
-        this._initArea()
-      }).catch((err) => {
-        this.$createDialog({
-          type: 'alert',
-          title: '',
-          content: '网络异常，请刷新重试',
-          icon: ''
-        }).show()
-      })
+        this._changeSelected()
+      }else{
+        return
+      }
+      this._initArea()
     },
     _initArea() {
       this.addressPicker = this.$createCascadePicker({
-        title: '请选择地区',
+        title: '请选择'+ this.tit,
         data: this.addressData,
         swipeTime: 400,
         selectedIndex: selectedIndex,
@@ -145,18 +152,17 @@ export default {
       }
     },
     selectHandle(selectedVal, selectedIndex, selectedText) {
-      this.selectedText = selectedText.join(' ')
-      this.setArea({
-        province: selectedVal[0],
-        city: selectedVal[1],
-        distinct: selectedVal[2]
-      })
+      this.selectedText = selectedText.join(this.joiner)
+      this.$emit('select', {val: selectedVal, text: this.selectedText})
+      this._changeSelected()
     },
     cancelHandle() {
-    },
-    ...mapMutations({
-      setArea: 'SET_AREA'
-    })
+    }
+  },
+  watch: {
+    data(newData) {
+      this._initData()
+    }
   }
 }
 </script>

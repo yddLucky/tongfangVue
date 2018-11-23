@@ -34,6 +34,7 @@ let vendor = (() => {
   return false
 })()
 
+// 动态添加前缀
 export function prefixStyle(style) {
   if (vendor === false) {
     return false
