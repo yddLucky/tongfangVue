@@ -57,6 +57,15 @@
             :maxlength="10"
             @blur="changeAppName"
           ></input-bar>
+          <input-bar
+            ref='insName'
+            tit="被保人姓名"
+            :data=appName
+            type="text"
+            errMsg="请输入正确的被保人姓名"
+            :maxlength="10"
+            @blur="changeAppName"
+          ></input-bar>
           <check-box
             tit="性别"
             :data="sexList"

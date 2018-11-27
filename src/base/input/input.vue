@@ -1,10 +1,10 @@
 <template>
   <div ref="err" class='primary'>
-    <div ref="inputBar" class="inputBar border-bottom" @click="focus">
+    <div ref="inputBar" class="inputBar border-bottom" @click.stop.prevent="_focus">
       <label>{{title}}</label>
-      <input ref="input" :type="type" @blur="blur" v-model="val" :maxlength="maxlength">
+      <input ref="input" :type="type" @blur="blur" v-model="val" :maxlength="maxlength" @focus="focus">
       <transition name="fade">
-        <i v-show="showIcon" class="el-icon-circle-close" @click="_clear"></i>
+        <i ref="del" v-show="showIcon" class="el-icon-circle-close" @click="_clear"></i>
       </transition>
     </div>
     <span class="errMsg">{{errMsg}}</span>
@@ -85,9 +85,17 @@ export default {
     removeErr() {
       this.$refs.err.classList.remove('err')
     },
+    addCurrent() {
+      this.$refs.err.classList.add('current')
+    },
+    removeCurrent() {
+      this.$refs.err.classList.remove('current')
+    },
+    _focus() {
+      this.$refs.input.focus()
+    },
     focus() {
       this.$refs.inputBar.classList.add('current')
-      this.$refs.input.focus()
       this.removeErr()
       this.removeRequired()
       this.showIcon = true
@@ -101,7 +109,6 @@ export default {
       }else{
         this.$refs.inputBar.classList.remove('has')
       }
-      this.$refs.input.blur()
       this.$emit('blur', this.val)
     },
     _clear() {
