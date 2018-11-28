@@ -93,15 +93,18 @@ export default {
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-.nav
+  .nav
     &.gray
       position: relative
       color: #394259
       text-align: center
+      padding-left: 20px
+      box-sizing: border-box
+      background: linear-gradient(to bottom, white, #f5f5f5)
       .nav-tabs
         position: relative
         overflow: hidden
-        padding: 5px 20px 0
+        padding-top: 5px
         height: 75px
         box-sizing: border-box
         background: linear-gradient(to bottom, white, #f5f5f5)
@@ -148,13 +151,13 @@ export default {
                 margin-top: 5px
       &.more
         .nav-tabs
-          padding: 5px 28px 0 20px
+          padding-top: 5px
           .tabs
             min-width: 100%
             display: inline-block
             white-space: nowrap
             box-sizing: border-box
-            padding-right: 40px
+            padding-right: 20px
             .tab
               display: inline-block
     &.white
@@ -162,10 +165,11 @@ export default {
       color: #394259
       text-align: center
       font-size: 16px
+      padding-left: 20px
+      box-sizing: border-box
       .nav-tabs
         position: relative
         overflow: hidden
-        padding-left: 20px
         .tabs
           min-width: 100%
           display: inline-block
@@ -183,6 +187,9 @@ export default {
             vertical-align: super
             &:last-child
               padding-right: 0
+              &.current
+                .text:after
+                  margin-left: -10px
             &.current
               color: #fa9128
               .text:after
@@ -195,7 +202,6 @@ export default {
                 margin-left: -20px
       &.more
         .nav-tabs
-          padding: 0 20px
           .tabs
-            padding-right: 40px
+            padding-right: 20px
 </style>

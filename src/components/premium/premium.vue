@@ -1,6 +1,19 @@
 <template>
-  <div class="premium">
-    <scroll class="preview-content">
+  <div class="scroll-list-wrap">
+    <cube-scroll 
+      ref="scroll"
+      :options="{
+        mouseWheel: {
+          speed: 20,
+          invert: false,
+          easeTime: 300
+        },
+        scrollbar: {
+          fade: true,
+          interactive: false
+        }
+      }"
+    >
       <div>
         <plan tit='请选择保障计划'></plan>
         <div class="information">
@@ -57,15 +70,6 @@
             :maxlength="10"
             @blur="changeAppName"
           ></input-bar>
-          <input-bar
-            ref='insName'
-            tit="被保人姓名"
-            :data=appName
-            type="text"
-            errMsg="请输入正确的被保人姓名"
-            :maxlength="10"
-            @blur="changeAppName"
-          ></input-bar>
           <check-box
             tit="性别"
             :data="sexList"
@@ -74,12 +78,11 @@
           ></check-box>
         </div>
       </div>
-    </scroll>
+    </cube-scroll>
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
-import Scroll from 'base/scroll/scroll'
 import Plan from 'base/plan/plan'
 import SelectBar from 'base/select/select'
 import AreaOccupation from 'base/area/area'
@@ -207,7 +210,6 @@ export default {
     })
   },
   components: {
-    Scroll,
     Plan,
     SelectBar,
     AreaOccupation,
@@ -222,16 +224,13 @@ export default {
  @import "~common/stylus/variable"
   
   .fix-iphonex-bottom
-    .premium
+    .scroll-list-wrap
       bottom: ($bottom + 0)px
-  .premium
+  .scroll-list-wrap
     position: fixed
     width: 100%
     top: 44px
     bottom: 0
-    .preview-content
-      height: 100%
-      overflow: hidden
-      .information
-        padding: 0 20px 30px
+    .information
+      padding: 0 20px 30px
 </style>

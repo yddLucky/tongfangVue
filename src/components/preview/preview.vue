@@ -1,6 +1,20 @@
 <template>
   <div class="preview">
-  	<scroll ref="scroll" class="preview-content">
+  	<cube-scroll
+      ref="scroll"
+      class="preview-content"
+      :options="{
+        mouseWheel: {
+          speed: 20,
+          invert: false,
+          easeTime: 300
+        },
+        scrollbar: {
+          fade: true,
+          interactive: false
+        }
+      }"
+    >
       <div>
         <!-- banner -->
         <div class="banner">
@@ -19,7 +33,7 @@
           <img src="https://esales.aegonthtf.com/sylifetime/tyimageL.jpg" @load="refresh">
         </div>
       </div>
-    </scroll>
+    </cube-scroll>
     <div class="under-btn">
       <div>
         <div class="service border-top">
@@ -37,7 +51,6 @@
 
 <script type='text/ecmascript-6'>
 import Loading from 'base/loading/loading'
-import Scroll from 'base/scroll/scroll'
 import Plan from 'base/plan/plan'
 
 export default {
@@ -65,7 +78,6 @@ export default {
   },
   components: {
     Loading,
-    Scroll,
     Plan
   }
 }

@@ -1,8 +1,8 @@
 <template>
   <div ref="err" class='primary'>
-    <div ref="inputBar" class="inputBar border-bottom" @click.stop.prevent="_focus">
+    <div ref="inputBar" class="inputBar border-bottom">
       <label>{{title}}</label>
-      <input ref="input" :type="type" @blur="blur" v-model="val" :maxlength="maxlength" @focus="focus">
+      <input ref="input" :type="type" @blur="blur" v-model="val" :maxlength="maxlength" @focus="focus" @input="input">
       <transition name="fade">
         <i ref="del" v-show="showIcon" class="el-icon-circle-close" @click="_clear"></i>
       </transition>
@@ -47,30 +47,17 @@ export default {
     }
   },
   mounted() {
-    this._initAll()
+    this._initInput()
   },
   methods: {
-    _initAll() {
-      this._initInput()
-      this._initTitle(this.showIcon)
-    },
     _initInput() {
       this.val = this.data
       if (this.val) {
+        this.title = this.tit
         this.$refs.inputBar.classList.add('has')
       }else{
+        this.title = pre + this.tit
         this.$refs.inputBar.classList.remove('has')
-      }
-    },
-    _initTitle(n) {
-      if(!n) {
-        if(this.val){
-          this.title = this.tit
-        }else{
-          this.title = pre + this.tit
-        }
-      }else{
-        this.title = this.tit
       }
     },
     addRequired() {
@@ -85,39 +72,39 @@ export default {
     removeErr() {
       this.$refs.err.classList.remove('err')
     },
-    addCurrent() {
-      this.$refs.err.classList.add('current')
-    },
-    removeCurrent() {
-      this.$refs.err.classList.remove('current')
-    },
-    _focus() {
-      this.$refs.input.focus()
-    },
     focus() {
+      if (this.val) {
+        this.showIcon = true
+      }else{
+        this.showIcon = false
+      }
       this.$refs.inputBar.classList.add('current')
       this.removeErr()
       this.removeRequired()
+      this.title = this.tit
+    },
+    input() {
+      this.$refs.inputBar.classList.add('current')
+      this.title = this.tit
       this.showIcon = true
     },
     blur() {
-      this.showIcon = false
       this.val = trim(this.val)
       this.$refs.inputBar.classList.remove('current')
       if (this.val !== '') {
+        this.title = this.tit
         this.$refs.inputBar.classList.add('has')
       }else{
+        this.title = pre + this.tit
         this.$refs.inputBar.classList.remove('has')
       }
+      this.showIcon = false
       this.$emit('blur', this.val)
     },
     _clear() {
       this.val = ''
-    }
-  },
-  watch: {
-    showIcon(n) {
-      this._initTitle(n)
+      this.showIcon = false
+      this.$refs.input.focus()
     }
   }
 }
@@ -129,10 +116,8 @@ export default {
 .primary
   .inputBar
     position: relative
-    display: flex
-    padding: 32px 0 15px
-    font-size: 16px
-    height: 21px
+    width: 100%
+    height: 68px
     line-height: 21px
     &:after
       background-color: $color-input-border
@@ -160,15 +145,18 @@ export default {
       transform: scale(1) translate(0px, 0px)
       pointer-events: none
     input
-      flex: 1 1 100%
+      width: 100%
       height: 100%
+      padding: 32px 21px 15px 0
       border: none
       outline: none
       color: #121c32
       font: inherit
       box-sizing: border-box
     i
-      position: relative
+      position: absolute
+      bottom: 17px
+      right: 2px
       color: #bec2cc
       height: 16px
       opacity: 1

@@ -13,6 +13,18 @@
     components: {
       MHead
     },
+    mounted() {
+      // 解决安卓手机输入框被遮挡问题
+      if (/Android/gi.test(navigator.userAgent)) {
+        window.addEventListener('resize', function () {
+          if (document.activeElement.tagName == 'INPUT' || document.activeElement.tagName == 'TEXTAREA') {
+            window.setTimeout(function () {
+                document.activeElement.scrollIntoViewIfNeeded()
+            }, 0)
+          }
+        })
+      }
+    },
     watch:{
       $route(to,from){
         isiphoneX()
