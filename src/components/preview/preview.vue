@@ -4,6 +4,7 @@
       ref="scroll"
       class="preview-content"
       :options="{
+        click: true,
         mouseWheel: {
           speed: 20,
           invert: false,

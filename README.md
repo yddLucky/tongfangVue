@@ -103,5 +103,48 @@ css
 
 `pointer-events: none`
 
+### input 清除功能
+
+图标需要在input内部，用padding挤开，点击需要隐藏图标，同时使input获得焦点，不隐藏会触发input的blur事件，键盘会有抖动的效果。
+
+#cube-ui
+
+##scroll的scrollTo()
+
+传入的x，y不带单位
+
+## 安卓手机input获得焦点点击scroll区域input不丢失焦点
+
+`
+<cube-scroll 
+      ref="scroll"
+      :scrollEvents= "['before-scroll-start']"
+      :options="{
+        click: true,
+        mouseWheel: {
+          speed: 20,
+          invert: false,
+          easeTime: 300
+        },
+        scrollbar: {
+          fade: true,
+          interactive: false
+        }
+      }"
+      @before-scroll-start="blurInput"
+></cube-scroll>
+
+methods: {
+    blurInput() {
+      const scroll = this.$refs.scroll
+      scroll && scroll.scroll.on('beforeScrollStart', () => {
+        let activeElement = document.activeElement
+        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+          activeElement.blur()
+        }
+      })
+    }
+}
+`
 
 

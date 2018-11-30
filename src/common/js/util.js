@@ -61,3 +61,30 @@ export function getRootPath(){
 export function trim(str) {
   return str.replace(/(^\s*)|(\s*$)/g, "")
 }
+
+/***
+scroll: cube-scroll的id
+roll：cube-scroll的第一个元素的id
+id：需要在中间显示的元素的id
+*/ 
+export function scrollTopError(scroll, roll, id){
+  let domScroll = document.getElementById(scroll)
+  let domRoll = document.getElementById(roll)
+  let dom = document.getElementById(id)
+  let scrollHeight = domScroll.offsetHeight
+  let rollHeight = domRoll.offsetHeight
+  let top = dom.offsetTop
+  let domHeight = dom.offsetHeight
+  let mid = top + domHeight/2
+  let res = rollHeight - mid
+
+  if(mid < scrollHeight/2){
+    return 0
+  }else{
+    if (res > scrollHeight/2){
+      return -(mid - scrollHeight/2)
+    }else{
+      return -(rollHeight - scrollHeight)
+    }
+  }
+}

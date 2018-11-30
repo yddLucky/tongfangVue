@@ -2,7 +2,7 @@
   <div ref="err" class='primary'>
     <div ref="inputBar" class="inputBar border-bottom">
       <label>{{title}}</label>
-      <input ref="input" :type="type" @blur="blur" v-model="val" :maxlength="maxlength" @focus="focus" @input="input">
+      <input ref="input" :type="type" @blur="blur" v-model.trim="val" :maxlength="maxlength" @focus="focus" @input="input">
       <transition name="fade">
         <i ref="del" v-show="showIcon" class="el-icon-circle-close" @click="_clear"></i>
       </transition>
@@ -12,7 +12,6 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import {trim} from 'common/js/util'
 // 数据后台获取进来显示是否有问题待确认
 const pre = '请输入'
 
@@ -89,7 +88,6 @@ export default {
       this.showIcon = true
     },
     blur() {
-      this.val = trim(this.val)
       this.$refs.inputBar.classList.remove('current')
       if (this.val !== '') {
         this.title = this.tit

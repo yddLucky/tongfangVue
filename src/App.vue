@@ -1,5 +1,5 @@
 <template>
-  <div id="app" @touchmove.prevent>
+  <div id="app">
     <m-head></m-head>
     <router-view></router-view>
   </div>
@@ -34,4 +34,6 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
+#app
+  height: 100%
 </style>

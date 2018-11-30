@@ -1,5 +1,10 @@
 <template>
   <div class="scroll-list-wrap">
+    <cube-input
+      v-model="value2"
+      placeholder="请输入内容1111"
+      :clearable="clearable"
+    ></cube-input>
     <cube-scroll 
       ref="scroll"
       :options="{
@@ -41,10 +46,16 @@ export default {
     return {
       value: "",
       value1: "",
+      value2: "",
       clearable: {
         visible: true,
         blurHidden: true
       }
+    }
+  },
+  methods: {
+    _scroll() {
+      this.$refs.scroll.scrollTo(0, '-100')
     }
   }
 }

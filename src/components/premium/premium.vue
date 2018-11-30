@@ -2,7 +2,9 @@
   <div class="scroll-list-wrap">
     <cube-scroll 
       ref="scroll"
+      :scrollEvents= "['before-scroll-start']"
       :options="{
+        click: true,
         mouseWheel: {
           speed: 20,
           invert: false,
@@ -13,6 +15,7 @@
           interactive: false
         }
       }"
+      @before-scroll-start="blurInput"
     >
       <div>
         <plan tit='请选择保障计划'></plan>
@@ -29,6 +32,7 @@
             :selected="paymentPeriod.selected" 
             @select="selectedPaymentPeriod"
           ></select-bar>
+          <div style="width: 100%;height: 56px;line-height: 56px;text-align: center" @click="showPassword" v-if="showYZM">显示验证码</div>
           <area-occupation
             tit="投保地区"
             type='area'
@@ -79,10 +83,21 @@
         </div>
       </div>
     </cube-scroll>
+    <password-input
+      ref="password"
+      v-if="passwordShow"
+      :show="passwordShow"
+      :phone="phone"
+      :t = "passwordTime"
+      @hide="hidePassword"
+      @resend="showPassword"
+      @complete="checkPassword"
+    ></password-input>
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
+import PasswordInput from 'base/passwordInput/passwordInput'
 import Plan from 'base/plan/plan'
 import SelectBar from 'base/select/select'
 import AreaOccupation from 'base/area/area'
@@ -92,6 +107,7 @@ import {getArea} from 'api/area'
 import {getOccupation} from 'api/occupation'
 import Age from 'base/age/age'
 import { sexList } from 'common/js/config'
+import { scrollTopError } from 'common/js/util'
 import { mapGetters, mapMutations} from 'vuex'
 
 export default {
@@ -99,7 +115,11 @@ export default {
     return {
       sexList: sexList,
       areaList: {},
-      occupationList: {}
+      occupationList: {},
+      passwordShow: false,
+      passwordTime: 0,
+      phone: '150******46',
+      showYZM: true
     }
   },
   computed: {
@@ -117,11 +137,62 @@ export default {
     ])
   },
   mounted() {
-    // let that = this
     this.getArea()
     this.getOccupation()
   },
   methods: {
+    blurInput() {
+      const scroll = this.$refs.scroll
+      scroll && scroll.scroll.on('beforeScrollStart', () => {
+        let activeElement = document.activeElement
+        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+          activeElement.blur()
+        }
+      })
+    },
+    setTimer() {
+      let that = this
+      if(that.passwordTime === 0) {
+        this.sendPassword()
+        that.passwordTimer = setInterval(function(){
+          if(that.passwordTime > 0) {
+            that.passwordTime--
+          }else{
+            that.showYZM = true
+            clearInterval(that.passwordTimer)
+            that.passwordTime = 0
+          }
+        }, 1000)
+      }
+    },
+    sendPassword() {
+      this.passwordTime = 59
+      // 请求验证码
+      console.log("请求验证码")
+    },
+    showPassword() {
+      this.passwordShow = true
+      this.setTimer()
+    },
+    checkPassword(res) {
+      console.log("验证完成")
+      // 需要发送验证码请求后判定
+      if(res === '222222') {
+        let that = this
+        this.$refs.password.addErr()
+        const timer = setTimeout(function(){
+          that.$refs.password.removeErr()
+          that.$refs.password.init()
+          clearTimeout(timer)
+        }, 500)
+      }else{
+        this.passwordShow = false
+        this.showYZM = false
+      }
+    },
+    hidePassword() {
+      this.passwordShow = false
+    },
     changeAppSex(res) {
       this.setAppSex(res)
     },
@@ -215,7 +286,8 @@ export default {
     AreaOccupation,
     Age,
     InputBar,
-    CheckBox
+    CheckBox,
+    PasswordInput
   }
 }
 </script>
