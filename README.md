@@ -109,6 +109,8 @@ css
 
 #cube-ui
 
+## input,text-area不要放在better-scroll里面
+
 ##scroll的scrollTo()
 
 传入的x，y不带单位
