@@ -31,9 +31,6 @@
           }
         })
       }
-      document.body.addEventListener('touchmove', function() {
-        isiphoneX()
-      })
     },
     watch:{
       $route(to,from){

@@ -32,6 +32,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+  import {getConfig} from 'api/wx'
 import Tab from 'base/tab/tab'
 import {goods, number} from 'common/js/config'
 
@@ -41,6 +42,9 @@ export default {
       details: goods[number].planDes,
       current: 0
     }
+  },
+  mounted() {
+    getConfig()
   },
   methods: {
     changePlan(index) {

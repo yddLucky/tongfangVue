@@ -111,6 +111,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+  import {getConfig} from 'api/wx'
   import Loading from 'base/loading/loading'
   import Plan from 'base/plan/plan'
   import Age from 'base/age/age'
@@ -139,6 +140,7 @@
     },
     mounted() {
       this.getArea()
+      getConfig()
     },
     computed: {
       ...mapGetters([

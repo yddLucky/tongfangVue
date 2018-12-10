@@ -2,7 +2,6 @@ import { commonParams } from './config'
 import { getUid } from 'common/js/uid'
 import axios from 'axios'
 import { ERR_OK } from 'api/config'
-
 const debug = process.env.NODE_ENV !== 'production'
 
 export function getLyric(mid) {

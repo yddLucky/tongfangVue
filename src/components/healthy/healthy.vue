@@ -21,6 +21,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+  import {getConfig} from 'api/wx'
   import {goods, number} from 'common/js/config'
 
   export default {
@@ -28,6 +29,9 @@
       return {
         healthyInfo: goods[number].healthy
       }
+    },
+    mounted() {
+      getConfig()
     },
     methods: {
       advisory() {

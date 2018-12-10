@@ -178,6 +178,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+  import {getConfig} from 'api/wx'
   import InputBar from 'base/input/input'
   import AreaOccupation from 'base/area/area'
   import SelectBar from 'base/select/select'
@@ -224,6 +225,7 @@
     mounted() {
       this.getOccupation()
       this.initAppNameForBank()
+      getConfig()
     },
     methods: {
       hidePayMark() {
