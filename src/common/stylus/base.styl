@@ -3,14 +3,22 @@
 
 html, body 
   line-height: 1
-  height: 100%
-  min-height: 100%
-  overflow: hidden
   font-family: '黑体'
   user-select: none
   -webkit-tap-highlight-color: transparent
   background: $color-background
   color: $color-text
+  .font-weight
+    font-weight: 700
+  sub, sup
+    font-size: 75%
+    line-height: 0
+    position: relative
+    vertical-align: baseline
+  sub
+    bottom: -0.25em
+  sup
+    top: -0.5em
   .clearfix:before,.clearfix:after
     content: ''
     display: table

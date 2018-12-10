@@ -2,33 +2,17 @@
   <div>
     <div class="tabTit">{{tit}}</div>
     <!-- 计划选择项 -->
-    <tab :data="tabs" :current="current" @chooseTab="changePlan" type="gray"></tab>
+    <tab :data="data" :current="plan" @chooseTab="changePlan" type="gray"></tab>
     <!-- 计划选择描述 -->
     <div class="tabDesSwiper">
       <div class="swiper-slide">
         <div class="border-bottom">
-          <div class="dl">
-            <div class="dt">重大疾病保险金</div>
-            <div class="dd">10万</div>
-          </div>
-          <div class="dl">
-            <div class="dt">轻症疾病保险金（3次）</div>
-            <div class="dd">2万</div>
-          </div>
-          <div class="dl">
-            <div class="dt">身故保险金</div>
-            <div class="dd">10万</div>
-          </div>
-          <div class="dl">
-            <div class="dt">轻症豁免保险费</div>
-            <div class="dd">豁免剩余未交保险</div>
-          </div>
-          <div class="dl">
-            <div class="dt">附加险满期保险金</div>
-            <div class="dd">可选</div>
+          <div class="dl" v-for="item in data[plan].des">
+            <div class="dt">{{item.text}}</div>
+            <div class="dd">{{item.value}}</div>
           </div>
           <div class="more">
-            <router-link to="planDes" class="morelink">查看保险详情<span class="el-icon-caret-right"></span></router-link>
+            <router-link to="/planDes" class="morelink">查看保险详情<span class="el-icon-caret-right"></span></router-link>
           </div>
         </div>
       </div>
@@ -38,50 +22,33 @@
 
 <script type='text/ecmascript-6'>
 import Tab from 'base/tab/tab'
+import { mapGetters, mapMutations} from 'vuex'
 
 export default {
   props: {
     tit: {
       type: String,
-      default: '保障详情'
+      default: '保障计划'
+    },
+    data: {
+      type: Array,
+      default: () => {
+        return []
+      }
     }
   },
-  data() {
-    return {
-      tabs: [
-        {
-          lowest: 101,
-          lowestDes: '元起',
-          insurAmountDesc: '100万有社保'
-        },
-        {
-          lowest: 102,
-          lowestDes: '元起',
-          insurAmountDesc: '100万有社保'
-        },
-        {
-          lowest: 102,
-          lowestDes: '元起',
-          insurAmountDesc: '100万有社保'
-        },
-        {
-          lowest: 102,
-          lowestDes: '元起',
-          insurAmountDesc: '100万有社保'
-        },
-        {
-          lowest: 102,
-          lowestDes: '元起',
-          insurAmountDesc: '100万有社保'
-        }
-      ],
-      current: 0
-    }
+  computed: {
+    ...mapGetters([
+      'plan'
+    ])
   },
   methods: {
     changePlan(index) {
-      this.current = index
-    }
+      this.setPlan(index)
+    },
+    ...mapMutations({
+      setPlan: 'SET_PLAN'
+    })
   },
   components: {
     Tab

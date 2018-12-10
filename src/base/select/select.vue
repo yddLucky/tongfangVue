@@ -11,8 +11,6 @@
 </template>
 
 <script type='text/ecmascript-6'>
-let selectedIndex = [0]
-
 export default {
   props: {
     tit: {
@@ -32,7 +30,8 @@ export default {
   },
   data() {
     return {
-      selectedText: '请选择'
+      selectedText: '请选择',
+      selectedIndex: [0]
     }
   },
   mounted() {
@@ -42,7 +41,7 @@ export default {
     _initPickerData() {
       this.data.forEach((item, index) => {
         if(item.value === this.selected){
-          selectedIndex = index
+          this.selectedIndex[0] = index
           this.selectedText = item.text
         }
       })
@@ -55,6 +54,7 @@ export default {
         this.picker = this.$createPicker({
           title: '请选择' + this.tit,
           data: [this.data],
+          selectedIndex: this.selectedIndex,
           onSelect: this.selectHandle,
           onCancel: this.cancelHandle,
           cancelTxt: '取消',

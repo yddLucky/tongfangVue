@@ -1,4 +1,32 @@
+export const SET_PLAN = 'SET_PLAN'
+
+export const SET_AGE = 'SET_AGE'
+
+export const SET_BIRTHDAY = 'SET_BIRTHDAY'
+
+export const SET_SEX = 'SET_SEX'
+
+export const SET_AMOUNT = 'SET_AMOUNT'
+
+export const SET_PREMIUM = 'SET_PREMIUM'
+
 export const SET_APPNAME = 'SET_APPNAME'
+
+export const SET_APPIDNO = 'SET_APPIDNO'
+
+export const SET_APPADDRESS = 'SET_APPADDRESS'
+
+export const SET_APPZIPCODE = 'SET_APPZIPCODE'
+
+export const SET_APPPHONE = 'SET_APPPHONE'
+
+export const SET_APPEMAIL = 'SET_APPEMAIL'
+
+export const SET_TBRELATION = 'SET_TBRELATION'
+
+export const SET_INSNAME = 'SET_INSNAME'
+
+export const SET_INSIDNO = 'SET_INSIDNO'
 
 export const SET_APPSEX = 'SET_APPSEX'
 
@@ -13,6 +41,12 @@ export const SET_APPBIRTHDAY = 'SET_APPBIRTHDAY'
 export const SET_INSAGE = 'SET_INSAGE'
 
 export const SET_INSBIRTHDAY = 'SET_INSBIRTHDAY'
+
+export const SET_RENEWBANKNAME = 'SET_RENEWBANKNAME'
+
+export const SET_RENEWBANKLOCATION = 'SET_RENEWBANKLOCATION'
+
+export const SET_RENEWBANKACCOUNT = 'SET_RENEWBANKACCOUNT'
 
 export const SET_COVERPERIOD = 'SET_COVERPERIOD'
 

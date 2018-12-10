@@ -6,17 +6,14 @@ Vue.use(Router)
 const Preview = () => import('components/preview/preview')
 const PlanDes = () => import('components/planDes/planDes')
 const Premium = () => import('components/premium/premium')
-const Test = () => import('components/test/test')
+const Healthy = () => import('components/healthy/healthy')
+const Infonmation = () => import('components/infonmation/infonmation')
 
 export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/preview'
-    },
-    {
-      path: '/test',
-      component: Test
+      redirect: '/premium'
     },
     {
       path: '/preview',
@@ -29,6 +26,21 @@ export default new Router({
     {
       path: '/premium',
       component: Premium
+    },
+    {
+      path: '/healthy',
+      component: Healthy
+    },
+    {
+      path: '/infonmation',
+      component: Infonmation
     }
-  ]
+  ],
+  scrollBehavior (to, from, savedPosition) { 
+    if (savedPosition) {  
+      return savedPosition 
+    } else {  
+      return { x: 0, y: 0 } 
+    } 
+  }
 })

@@ -71,13 +71,14 @@ export default {
     flex: 1 1 auto
     .cloud
       position: absolute
-      z-index: -1
+      z-index: 3
       display: block
       height: 22px
       border-radius: 20px
       background-color: #c8ebff
     ul
       position: relative
+      z-index: 4
       display: flex
       align-items: center
       align-content: center

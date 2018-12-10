@@ -1,5 +1,19 @@
 const state = {
+  plan: 0,
+  age: 0,
+  birthday: '',
+  sex: 0,
   appName: '',
+  appIdNo: '',
+  appAddress: '',
+  appZipcode: '',
+  appPhone: '',
+  appEmail: '',
+  tbRelation: '',
+  insName: '',
+  insIdNo: '',
+  amount: '请选择',
+  premium: '--',
   appSex: 0,
   area: {},
   occupation: {},
@@ -7,6 +21,9 @@ const state = {
   appBirthday: '',
   insAge: 0,
   insBirthday: '',
+  renewBankName: '',
+  renewBankLocation: '',
+  renewBankAccount: '',
   coverPeriod: {
     selectList: [
       {

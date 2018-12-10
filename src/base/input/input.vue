@@ -104,6 +104,13 @@ export default {
       this.showIcon = false
       this.$refs.input.focus()
     }
+  },
+  watch: {
+    val(nV) {
+      if(nV === '') {
+        this.showIcon = false
+      }
+    }
   }
 }
 </script>

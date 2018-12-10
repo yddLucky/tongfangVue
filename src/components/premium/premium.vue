@@ -1,308 +1,362 @@
 <template>
-  <div class="scroll-list-wrap">
-    <cube-scroll 
-      ref="scroll"
-      :scrollEvents= "['before-scroll-start']"
-      :options="{
-        click: true,
-        mouseWheel: {
-          speed: 20,
-          invert: false,
-          easeTime: 300
-        },
-        scrollbar: {
-          fade: true,
-          interactive: false
-        }
-      }"
-      @before-scroll-start="blurInput"
-    >
-      <div>
-        <plan tit='请选择保障计划'></plan>
-        <div class="information">
-          <select-bar
-            tit="保障期限"
-            :data="coverPeriod.selectList" 
-            :selected="coverPeriod.selected" 
-            @select="selectedCoverPeriod"
-          ></select-bar>
-          <select-bar
-            tit="缴费期限"
-            :data="paymentPeriod.selectList" 
-            :selected="paymentPeriod.selected" 
-            @select="selectedPaymentPeriod"
-          ></select-bar>
-          <div style="width: 100%;height: 56px;line-height: 56px;text-align: center" @click="showPassword" v-if="showYZM">显示验证码</div>
-          <area-occupation
-            tit="投保地区"
-            type='area'
-            :data="areaList"
-            :selected="area"
-            @select="selectedArea"
-          ></area-occupation>
-          <area-occupation
-            tit="投保人职业"
-            type='occupation'
-            :data="occupationList"
-            :selected="occupation"
-            @select="selectedOccupation"
-          ></area-occupation>
-          <age 
-            :age=appAge
-            :birthday=appBirthday
-            :maxAge='40' 
-            :minAge='18' 
-            :updateAge='30'
-            @setBirthday='setAppBirthday'
-            @setAge='setAppAge'
-          ></age>
-          <age 
-            :age=insAge
-            :birthday=insBirthday
-            :maxAge='17' 
-            :minAge='0' 
-            :updateAge='10'
-            @setBirthday='setInsBirthday'
-            @setAge='setInsAge'
-          ></age>
-          <input-bar
-            ref='appName'
-            tit="投保人姓名"
-            :data=appName
-            type="text"
-            errMsg="请输入正确的投保人姓名"
-            :maxlength="10"
-            @blur="changeAppName"
-          ></input-bar>
-          <check-box
-            tit="性别"
-            :data="sexList"
-            :checked=appSex
-            @checked="changeAppSex"
-          ></check-box>
+  <div>
+    <div class="premium">
+      <!-- banner -->
+      <div class="banner">
+        <img :src="rules.banner.src">
+      </div>
+      <!-- 产品优势 -->
+      <div class="advantage border-bottom">
+        <div class="top">
+          <div class="title">{{rules.banner.title}}</div>
+          <span class="des">{{rules.banner.des}}</span>
+        </div>
+        <ul>
+          <li  v-for="advantage in rules.banner.advantages">
+            <span></span>
+            {{advantage}}
+          </li>
+        </ul>
+      </div>
+      <plan :data="rules.plan"></plan>
+      <div class="description">
+        <img :src="rules.introduction">
+      </div>
+      
+      <div class="under-btn">
+        <div>
+          <div class="service border-top">
+            <a href='https://www.sobot.com/chat/h5/index.html?sysNum=526a27dcc2c64f808bf4b988e159e32e'>
+              <img src="./kefu.png">
+              <br>
+              客服
+            </a>
+          </div>
+          <el-button type="primary" @click='showPremium'>立即测算</el-button>
         </div>
       </div>
-    </cube-scroll>
-    <password-input
-      ref="password"
-      v-if="passwordShow"
-      :show="passwordShow"
-      :phone="phone"
-      :t = "passwordTime"
-      @hide="hidePassword"
-      @resend="showPassword"
-      @complete="checkPassword"
-    ></password-input>
+
+      <!-- 测算层 -->
+      <mark-layer
+        class="markLayer" 
+        :show="mark"
+        @hide="hidePremium"
+      >
+        <div class="selectBar border-bottom" @touchmove.prevent>
+          <div class="tit font-weight">保费测算:</div>
+          <div class="select">
+            <div class="cancel" @click="hidePremium">取消</div>
+          </div>
+        </div>
+        <div class="content" ref="content" @touchmove="touchScroll" @touchstart="touchScrollStart">
+          <div ref="contentScroll">
+            <area-occupation
+              tit="投保地区"
+              type='area'
+              :data="areaList"
+              :selected="area"
+              @select="selectedArea"
+            ></area-occupation>
+            <age 
+              :age=age
+              :birthday=birthday
+              :maxAge='45' 
+              :minAge='0' 
+              :updateAge='0'
+              @setBirthday='setBirthday'
+              @setAge='setAge'
+            ></age>
+            <check-box
+              tit="性别"
+              :data="sexList"
+              :checked=sex
+              @checked="changeSex"
+            ></check-box>
+            <select-bar
+              tit="基本保额"
+              :data="amountList" 
+              :selected="amount" 
+              @select="selectedAmount"
+            ></select-bar>
+            <Layout tit="保险期间" text="保至70周岁"></Layout>
+            <Layout tit="交费方式" text="年交"></Layout>
+            <select-bar
+              tit="交费期间"
+              :data="amountList" 
+              :selected="amount" 
+              @select="selectedAmount"
+            ></select-bar>
+            <check-box
+              tit="性别"
+              :data="sexList"
+              :checked=sex
+              @checked="changeSex"
+            ></check-box>
+          </div>
+        </div>
+        <div class="under-btn" @click.stop @touchmove.prevent>
+          <div>
+            <div class="pre border-top">
+              年付保费
+              <span class="premium font-weight">
+                ￥{{premium}}
+              </span>
+            </div>
+            <el-button type="primary" class="next" @click="submitInfo">立即购买</el-button>
+          </div>
+        </div>
+      </mark-layer>
+    </div>
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
-import PasswordInput from 'base/passwordInput/passwordInput'
-import Plan from 'base/plan/plan'
-import SelectBar from 'base/select/select'
-import AreaOccupation from 'base/area/area'
-import InputBar from 'base/input/input'
-import CheckBox from 'base/checkbox/checkbox'
-import {getArea} from 'api/area'
-import {getOccupation} from 'api/occupation'
-import Age from 'base/age/age'
-import { sexList } from 'common/js/config'
-import { scrollTopError } from 'common/js/util'
-import { mapGetters, mapMutations} from 'vuex'
+  import Loading from 'base/loading/loading'
+  import Plan from 'base/plan/plan'
+  import Age from 'base/age/age'
+  import { sexList } from 'common/js/config'
+  import CheckBox from 'base/checkbox/checkbox'
+  import SelectBar from 'base/select/select'
+  import Layout from 'base/layout/layout'
+  import {getArea} from 'api/area'
+  import AreaOccupation from 'base/area/area'
+  import MarkLayer from 'base/mark-layer/mark-layer'
+  import {goods, number} from 'common/js/config'
+  import { mapGetters, mapMutations} from 'vuex'
 
-export default {
-  data() {
-    return {
-      sexList: sexList,
-      areaList: {},
-      occupationList: {},
-      passwordShow: false,
-      passwordTime: 0,
-      phone: '150******46',
-      showYZM: true
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'appName',
-      'appSex',
-      'coverPeriod',
-      'paymentPeriod',
-      'area',
-      'occupation',
-      'appAge',
-      'appBirthday',
-      'insAge',
-      'insBirthday'
-    ])
-  },
-  mounted() {
-    this.getArea()
-    this.getOccupation()
-  },
-  methods: {
-    blurInput() {
-      const scroll = this.$refs.scroll
-      scroll && scroll.scroll.on('beforeScrollStart', () => {
-        let activeElement = document.activeElement
-        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
-          activeElement.blur()
+  const amountList = goods[number].plan[0].amountList[0]
+  let touchstartY = 0
+
+  export default {
+    data() {
+      return {
+        rules: goods[number],
+        mark: false,
+        areaList: {},
+        sexList: sexList,
+        amountList: amountList
+      }
+    },
+    mounted() {
+      this.getArea()
+    },
+    computed: {
+      ...mapGetters([
+        'area',
+        'age',
+        'birthday',
+        'sex',
+        'amount',
+        'premium'
+      ])
+    },
+    methods: {
+      touchScrollStart(e) {
+        touchstartY = e.targetTouches[0].pageY
+      },
+      touchScroll(e) {
+        const top = this.$refs.content.scrollTop
+        const boxH = this.$refs.content.offsetHeight
+        const contH = this.$refs.contentScroll.offsetHeight
+        // 边界判断
+        if(top <= 0) {
+            e.targetTouches[0].pageY > touchstartY && e.preventDefault() && e.stopPropagation()
         }
+        if((top >= contH - boxH) && (e.targetTouches[0].pageY < touchstartY)){
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      },
+      showPremium() {
+        console.log(1)
+        this.mark = true
+      },
+      hidePremium() {
+        this.mark = false
+      },
+      getArea() {
+        getArea().then((res) => {
+          this.areaList = res[0]
+        }).catch((err) => {
+          this.$createDialog({
+            type: 'alert',
+            title: '',
+            content: '网络异常，请刷新重试',
+            icon: ''
+          }).show()
+        })
+      },
+      selectedArea(res) {
+        this.setArea({
+          level1: res.val[0],
+          level2: res.val[1],
+          level3: res.val[2],
+          text: res.text
+        })
+      },
+      setBirthday(res) {
+        this.setBirthday(res)
+      },
+      setAge(res) {
+        this.setAge(res)
+      },
+      changeSex(res) {
+        this.setSex(res)
+      },
+      selectedAmount(res) {
+        this.setAmount(res)
+      },
+      submitInfo() {
+        // 数据校验并请求后台
+        this.$router.push({
+          path: '/healthy'
+        })
+      },
+      ...mapMutations({
+        setArea: 'SET_AREA',
+        setAge: 'SET_AGE',
+        setBirthday: 'SET_BIRTHDAY',
+        setSex: 'SET_SEX',
+        setAmount: 'SET_AMOUNT'
       })
     },
-    setTimer() {
-      let that = this
-      if(that.passwordTime === 0) {
-        this.sendPassword()
-        that.passwordTimer = setInterval(function(){
-          if(that.passwordTime > 0) {
-            that.passwordTime--
-          }else{
-            that.showYZM = true
-            clearInterval(that.passwordTimer)
-            that.passwordTime = 0
-          }
-        }, 1000)
-      }
-    },
-    sendPassword() {
-      this.passwordTime = 59
-      // 请求验证码
-      console.log("请求验证码")
-    },
-    showPassword() {
-      this.passwordShow = true
-      this.setTimer()
-    },
-    checkPassword(res) {
-      console.log("验证完成")
-      // 需要发送验证码请求后判定
-      if(res === '222222') {
-        let that = this
-        this.$refs.password.addErr()
-        const timer = setTimeout(function(){
-          that.$refs.password.removeErr()
-          that.$refs.password.init()
-          clearTimeout(timer)
-        }, 500)
-      }else{
-        this.passwordShow = false
-        this.showYZM = false
-      }
-    },
-    hidePassword() {
-      this.passwordShow = false
-    },
-    changeAppSex(res) {
-      this.setAppSex(res)
-    },
-    changeAppName(res) {
-      if (res) {
-        console.log(res)
-        this.$refs.appName.addErr()
-      }
-      this.setAppName(res)
-    },
-    selectedCoverPeriod(res) {
-      this.setCoverPeriod({
-        selectList: this.coverPeriod.selectList,
-        selected: res
-      })
-    },
-    selectedPaymentPeriod(res) {
-      this.setPaymentPeriod({
-        selectList: this.paymentPeriod.selectList,
-        selected: res
-      })
-    },
-    getArea() {
-      getArea().then((res) => {
-        this.areaList = res[0]
-      }).catch((err) => {
-        this.$createDialog({
-          type: 'alert',
-          title: '',
-          content: '网络异常，请刷新重试',
-          icon: ''
-        }).show()
-      })
-    },
-    getOccupation() {
-      getOccupation().then((res) => {
-        this.occupationList = res[0]
-      }).catch((err) => {
-        this.$createDialog({
-          type: 'alert',
-          title: '',
-          content: '网络异常，请刷新重试',
-          icon: ''
-        }).show()
-      })
-    },
-    setAppBirthday(res) {
-      this.setAppBirthday(res)
-    },
-    setAppAge(res) {
-      this.setAppAge(res)
-    },
-    setInsBirthday(res) {
-      this.setInsBirthday(res)
-    },
-    setInsAge(res) {
-      this.setInsAge(res)
-    },
-    selectedArea(res) {
-      this.setArea({
-        level1: res.val[0],
-        level2: res.val[1],
-        level3: res.val[2],
-        text: res.text
-      })
-    },
-    selectedOccupation(res) {
-      this.setOccupation({
-        level1: res.val[0],
-        level2: res.val[1],
-        level3: res.val[2],
-        text: res.vtext
-      })
-    },
-    ...mapMutations({
-      setAppName: 'SET_APPNAME',
-      setAppSex: 'SET_APPSEX',
-      setCoverPeriod: 'SET_COVERPERIOD',
-      setPaymentPeriod: 'SET_PAYMENTPERIOD',
-      setArea: 'SET_AREA',
-      setOccupation: 'SET_OCCUPATION',
-      setAppAge: 'SET_APPAGE',
-      setAppBirthday: 'SET_APPBIRTHDAY',
-      setInsAge: 'SET_INSAGE',
-      setInsBirthday: 'SET_INSBIRTHDAY'
-    })
-  },
-  components: {
-    Plan,
-    SelectBar,
-    AreaOccupation,
-    Age,
-    InputBar,
-    CheckBox,
-    PasswordInput
+    components: {
+      Loading,
+      Plan,
+      AreaOccupation,
+      Age,
+      CheckBox,
+      SelectBar,
+      Layout,
+      MarkLayer
+    }
   }
-}
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
- @import "~common/stylus/variable"
+  @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
   
   .fix-iphonex-bottom
-    .scroll-list-wrap
-      bottom: ($bottom + 0)px
-  .scroll-list-wrap
-    position: fixed
+    .premium
+      margin-bottom: ($bottom + $under-btn-height)px
+      .under-btn
+        height: ($bottom + $under-btn-height)px
+
+  .premium
     width: 100%
-    top: 44px
-    bottom: 0
-    .information
-      padding: 0 20px 30px
+    margin-top: 44px
+    margin-bottom: ($under-btn-height + 0)px
+    .banner
+      position: relative
+      width: 100%
+      font-size: 0
+      z-index: -1
+      img
+        width: 100%
+    .advantage
+      width: 100%
+      padding: 5px 20px
+      box-sizing: border-box
+      color: gray
+      margin-top: -75px
+      .top
+        height: 75px
+        background: rgba(255,255,255, 0)
+        .title
+          font-size: 26px
+          margin-bottom: 10px
+          no-wrap()
+        .des
+          font-size: 14px
+      ul
+        padding: 5px 0
+        li
+          font-size: 12px
+          line-height: 18px
+          span
+            margin-top: 2px
+            border-radius: 50%
+            line-height: 18px
+            width: 14px
+            height: 14px
+            vertical-align: top
+            display: inline-block
+            background: $color-btn
+    .description
+      padding: 10px 20px 30px
+      img
+        width: 100%
+    .under-btn
+      position: fixed
+      left: 0
+      bottom: 0
+      height: ($under-btn-height + 0)px
+      font-size: 16px
+      width: 100%
+      background-color: #fff
+      &>div
+        position: absolute
+        top: 0
+        left: 0
+        width: 100%
+        display: flex
+        .service
+          flex: 0 1 30%
+          box-sizing: border-box
+          height: ($under-btn-height + 0)px
+          line-height: 20px
+          text-align: center
+          a
+            display: block
+            width: 100%
+            height: 100%
+            text-align: center
+            img
+              vertical-align: middle
+              width: 16px
+              height: 16px
+              padding-top: 5px
+              padding-left: 4px
+        .el-button
+          flex: 0 1 70%
+          border-radius: 0
+          background-color: $color-btn
+          border-color: $color-btn
+          font-size: 16px
+    .markLayer
+      .selectBar
+        .select
+          .cancel
+            extend-click()
+            position: absolute
+            color: $color-btn
+            font-size: 14px
+            right: 0
+            bottom: 20px
+      .content
+        width: 100%
+        max-height: 410px
+        overflow-y: auto
+        overflow-x: hidden
+        box-sizing: border-box
+        background: #fff
+        &>div
+          padding-bottom: 80px
+        .selectBar:last-child
+          &:after
+            height: 0
+      .under-btn
+        z-index: 9
+        .pre
+          flex: 1 1 65%
+          height: 48px
+          line-height: 48px
+          padding-left: 20px
+          .premium
+            color: $color-btn
+            font-size: $font-size-large-x
+        .next
+          flex: 1 1 45%
+     
 </style>

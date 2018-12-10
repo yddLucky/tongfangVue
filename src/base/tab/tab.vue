@@ -6,9 +6,9 @@
           <div class="text">
             <div>
               <div class="top" v-if="type === 'gray'">
-                <span class="number">{{item.lowest}}</span>{{item.lowestDes}}
+                <span class="number">{{item.lowest}}</span>元起
               </div>
-              <div class="bottom">{{item.insurAmountDesc}}</div>
+              <div class="bottom">{{item.duration}}</div>
             </div>
           </div>
         </div>
@@ -99,6 +99,7 @@ export default {
       color: #394259
       text-align: center
       padding-left: 20px
+      padding-right: 20px
       box-sizing: border-box
       background: linear-gradient(to bottom, white, #f5f5f5)
       .nav-tabs
@@ -150,6 +151,7 @@ export default {
               .bottom
                 margin-top: 5px
       &.more
+        padding-right: 0
         .nav-tabs
           padding-top: 5px
           .tabs
@@ -166,22 +168,22 @@ export default {
       text-align: center
       font-size: 16px
       padding-left: 20px
+      padding-right: 20px
       box-sizing: border-box
       .nav-tabs
         position: relative
         overflow: hidden
         .tabs
           min-width: 100%
-          display: inline-block
+          display: flex
           white-space: nowrap
           box-sizing: border-box
           .tab
-            display: inline-block
+            flex: 1
             min-width: 50px
             width: auto
             height: 50px
             line-height: 55px
-            padding-right: 15px
             position: relative
             box-sizing: border-box
             vertical-align: super
@@ -199,9 +201,17 @@ export default {
                 bottom: 5px
                 width: 25px
                 left: 50%
-                margin-left: -20px
+                margin-left: -10px
       &.more
+        padding-right: 0
         .nav-tabs
           .tabs
+            display: inline-block
             padding-right: 20px
+          .tab
+            display: inline-block
+            padding-right: 15px
+            &.current
+              .text:after
+                margin-left: -20px
 </style>
