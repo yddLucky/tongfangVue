@@ -1,9 +1,26 @@
 import axios from 'axios'
 import wx from 'weixin-js-sdk'
 import qs from 'qs'
+import {goods, number} from 'common/js/config'
+import {getRootPath, getQueryUrlParamVal} from 'common/js/util'
+
+const share = goods[number].share
+const link = window.location.href
+let shareUrl = ''
+if(getQueryUrlParamVal("sourceFrom")){
+  sessionStorage.sourceFrom = getQueryUrlParamVal("sourceFrom")
+}
+if(getQueryUrlParamVal("sid")){
+  sessionStorage.sid = getQueryUrlParamVal("sid")
+}
+
+if(link.indexOf("esales.aegonthtf.com")>=0){
+  shareUrl = "https://esales.aegonthtf.com/sales/baiduToe/preview/toyoesen/page/premium.html?sourceFrom="+sessionStorage.sourceFrom+"&sid="+sessionStorage.sid
+}else{
+  shareUrl = "https://esales-dev.aegonthtf.com/sales/baiduToe/preview/toyoesen/page/premium.html?sourceFrom="+sessionStorage.sourceFrom+"&sid="+sessionStorage.sid
+}
 
 const headers = {headers: {'Content-type': 'application/x-www-form-urlencoded;charset=UTF-8'}}
-const Base64 = require('js-base64').Base64
 
 export function isWeiXin() {
   const ua = window.navigator.userAgent.toLowerCase()
@@ -20,6 +37,9 @@ export function isIos() {
 }
 
 export function getConfig() {
+    if(!isWeiXin()) {
+      return
+    }
     let url = getHost() + '/sales/customerSection/customerSection_getWeixinJS.action'
     let data = {
       url: location.href.split('#')[0]
@@ -51,7 +71,47 @@ export function getConfig() {
     })
     
     wx.ready(function () {
+      // 显示分享
       wx.showOptionMenu()
+
+      // 发送给朋友
+      wx.onMenuShareAppMessage({
+        title: share.shareTitle_friend,
+        desc: share.descContent_friend,
+        link: shareUrl,
+        imgUrl: share.imgUrl,
+        trigger: function (res) {
+          //alert('用户点击发送给朋友');
+        },
+        success: function (res) {
+          //alert('已分享');
+        },
+        cancel: function (res) {
+          //alert('已取消');
+        },
+        fail: function (res) {
+          alert(JSON.stringify(res));
+        }
+      })
+      // 分享到朋友圈
+      wx.onMenuShareTimeline({
+        title: share.shareTitle_timeLine,
+        link: shareUrl,
+        imgUrl: share.imgUrl,
+        trigger: function (res) {
+          //alert('用户点击分享到朋友圈');
+        },
+        success: function (res) {
+          //alert('已分享');
+        },
+        cancel: function (res) {
+          //alert('已取消');
+        },
+        fail: function (res) {
+          alert(JSON.stringify(res));
+        }
+      })
+
       wx.hideMenuItems({
         menuList: [
           'menuItem:editTag',

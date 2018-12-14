@@ -60,13 +60,14 @@
             <age 
               :age=age
               :birthday=birthday
-              :maxAge='45' 
-              :minAge='0' 
-              :updateAge='0'
+              :maxAge='maxAge' 
+              :minAge='minAge' 
+              :updateAge='age'
               @setBirthday='setBirthday'
               @setAge='setAge'
             ></age>
             <check-box
+              v-if="mark"
               tit="性别"
               :data="sexList"
               :checked=sex
@@ -78,20 +79,26 @@
               :selected="amount" 
               @select="selectedAmount"
             ></select-bar>
-            <Layout tit="保险期间" text="保至70周岁"></Layout>
+            <Layout tit="保险期间" :text="durationText"></Layout>
             <Layout tit="交费方式" text="年交"></Layout>
             <select-bar
               tit="交费期间"
-              :data="amountList" 
-              :selected="amount" 
-              @select="selectedAmount"
+              :data="paymentYearList" 
+              :selected="paymentYear" 
+              @select="selectedPaymentYear"
             ></select-bar>
             <check-box
-              tit="性别"
-              :data="sexList"
-              :checked=sex
-              @checked="changeSex"
+              v-if="mark && additionShow"
+              tit="附加险"
+              :data="additionList"
+              :checked=addition
+              @checked="changeAddition"
             ></check-box>
+            <Layout
+              v-if="addition === 0"
+              tit="附加险保障期限" 
+              :text="additionDurationText"
+            ></Layout>
           </div>
         </div>
         <div class="under-btn" @click.stop @touchmove.prevent>
@@ -111,22 +118,24 @@
 </template>
 
 <script type='text/ecmascript-6'>
-  import {getConfig} from 'api/wx'
+  import {getConfig, isWeiXin} from 'api/wx'
   import Loading from 'base/loading/loading'
   import Plan from 'base/plan/plan'
   import Age from 'base/age/age'
-  import { sexList } from 'common/js/config'
+  import { sexList, additionList, goods, number } from 'common/js/config'
   import CheckBox from 'base/checkbox/checkbox'
   import SelectBar from 'base/select/select'
   import Layout from 'base/layout/layout'
   import {getArea} from 'api/area'
   import AreaOccupation from 'base/area/area'
   import MarkLayer from 'base/mark-layer/mark-layer'
-  import {goods, number} from 'common/js/config'
   import { mapGetters, mapMutations} from 'vuex'
 
-  const amountList = goods[number].plan[0].amountList[0]
   let touchstartY = 0
+  const Base64 = require('js-base64').Base64
+  const rateTable = goods[number].rateTable
+  const rateTableB = goods[number].rateTableB
+  const cityArr = ['110100','310100','440100','440300','320100','320500','320200','420100','130100','370200','370100','510100','350100','350200','120100']
 
   export default {
     data() {
@@ -135,12 +144,46 @@
         mark: false,
         areaList: {},
         sexList: sexList,
-        amountList: amountList
+        amountList: [
+          {
+            text: '10万',
+            value: '100000'
+          },
+          {
+            text: '20万',
+            value: '200000'
+          },
+          {
+            text: '30万',
+            value: '300000'
+          },
+          {
+            text: '40万',
+            value: '400000'
+          },
+          {
+            text: '50万',
+            value: '500000'
+          }
+        ],
+        durationText: '',
+        paymentYearList: [],
+        paymentYear: '请选择',
+        additionShow: false,
+        additionList: additionList,
+        addition: 0,
+        additionDurationText: '',
+        additionDuration: '',
+        duration: 30,
+        maxAge: 45,
+        minAge: 0
       }
+    },
+    created() {
+      this.getUrlParam()
     },
     mounted() {
       this.getArea()
-      getConfig()
     },
     computed: {
       ...mapGetters([
@@ -149,10 +192,33 @@
         'birthday',
         'sex',
         'amount',
-        'premium'
+        'premium',
+        'plan'
       ])
     },
     methods: {
+      getUrlParam() {
+        if(this.$route.query.sourceFrom) {
+          sessionStorage.sourceFrom = this.$route.query.sourceFrom
+        }
+        if(this.$route.query.sid) {
+          sessionStorage.sid = this.$route.query.sid
+        }
+        
+        if(this.$route.query.openid) {
+          sessionStorage.openId = this.$route.query.openid
+        }
+        if (!sessionStorage.openId && isWeiXin()) {
+          const link = window.location.href.split('?')[0]
+          const baseLink = Base64.encode(link)
+          if (link.indexOf("esalesd.aegonthtf.com") >= 0) { //生产
+            window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe6f2b9f50c43534e&redirect_uri=http://cloud.aegonthtf.com/WEIXIN/getinfo/getNewOpenid.do%3Fother=" + baseLink + "&response_type=code&scope=snsapi_base&state=111&#wechat_redirect"
+          } else {
+            window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7cfad1fc7b158f54&redirect_uri=https://testcloud.aegonthtf.com/WEIXIN/getinfo/getNewOpenid.do%3Fother=" + baseLink + "&response_type=code&scope=snsapi_base&state=111&#wechat_redirect"
+          }
+        }
+        getConfig()
+      },
       touchScrollStart(e) {
         touchstartY = e.targetTouches[0].pageY
       },
@@ -170,11 +236,38 @@
         }
       },
       showPremium() {
-        console.log(1)
         this.mark = true
       },
       hidePremium() {
         this.mark = false
+      },
+      changeAddition(res) {
+        this.addition = res
+      },
+      calculatePremium() {
+        if(!this.birthday) {
+          this.setPremium('--')
+          return
+        }
+        if(this.paymentYear === '请选择') {
+          this.setPremium('--')
+          return
+        }
+        if(this.amount === '请选择') {
+          this.setPremium('--')
+          return
+        }
+        // 主险保费
+        const primaryPremium = rateTable[this.duration][this.sex][this.paymentYear][this.age] *  this.amount/1000
+        let additionPremium = 0
+        if(this.addition === 0) {
+          // 有附加险
+          additionPremium = rateTableB[this.additionDuration][this.sex][this.paymentYear][this.age] * this.amount/1000
+        }else{
+          additionPremium = 0
+        }
+        const all = Math.round(primaryPremium + additionPremium)
+        this.setPremium(all)
       },
       getArea() {
         getArea().then((res) => {
@@ -208,19 +301,292 @@
       selectedAmount(res) {
         this.setAmount(res)
       },
+      selectedPaymentYear(res) {
+        this.paymentYear = res
+      },
       submitInfo() {
         // 数据校验并请求后台
         this.$router.push({
           path: '/healthy'
         })
       },
+      changeAmountList(area, age) {
+        if(!area.level2 || (area.level2 && cityArr.indexOf(area.level2) > -1)) {
+          if(age >= 0 && age <= 40) {
+            this.amountList = [
+              {
+                text: '10万',
+                value: '100000'
+              },
+              {
+                text: '20万',
+                value: '200000'
+              },
+              {
+                text: '30万',
+                value: '300000'
+              },
+              {
+                text: '40万',
+                value: '400000'
+              },
+              {
+                text: '50万',
+                value: '500000'
+              }
+            ]
+          }else if(age > 40 && age <= 45) {
+            this.amountList = [
+              {
+                text: '10万',
+                value: '100000'
+              },
+              {
+                text: '20万',
+                value: '200000'
+              }
+            ]
+          }else if(age > 45) {
+            this.amountList = [
+              {
+                text: '10万',
+                value: '100000'
+              }
+            ]
+            this.setAmount('100000')
+          }
+        }else{
+          if(age >= 0 && age <= 17) {
+            this.amountList = [
+              {
+                text: '10万',
+                value: '100000'
+              },
+              {
+                text: '20万',
+                value: '200000'
+              }
+            ]
+          }else if(age > 17 && age <= 40) {
+            this.amountList = [
+              {
+                text: '10万',
+                value: '100000'
+              },
+              {
+                text: '20万',
+                value: '200000'
+              },
+              {
+                text: '30万',
+                value: '300000'
+              }
+            ]
+          }else if(age > 40 && age <= 45) {
+            this.amountList = [
+              {
+                text: '10万',
+                value: '100000'
+              },
+              {
+                text: '20万',
+                value: '200000'
+              }
+            ]
+          }else if(age > 45) {
+            this.amountList = [
+              {
+                text: '10万',
+                value: '100000'
+              }
+            ]
+            this.setAmount('100000')
+          }
+        }
+        // 保障期间30年 30万起
+        if(this.duration === 30) {
+          if(!area.level2 || (area.level2 && cityArr.indexOf(area.level2) > -1)) {
+            // A类城市 0-40 50万
+            this.amountList = [
+              {
+                text: '30万',
+                value: '300000'
+              },
+              {
+                text: '40万',
+                value: '400000'
+              },
+              {
+                text: '50万',
+                value: '500000'
+              }
+            ]
+          }else{
+            this.amountList = [
+              {
+                text: '30万',
+                value: '300000'
+              }
+            ]
+            this.setAmount('300000')
+          }
+        }
+
+        if(this.amount < this.amountList[0].value || this.amount > this.amountList[this.amountList.length-1].value) {
+          this.setAmount('请选择')
+        }
+
+      },
       ...mapMutations({
         setArea: 'SET_AREA',
         setAge: 'SET_AGE',
         setBirthday: 'SET_BIRTHDAY',
         setSex: 'SET_SEX',
-        setAmount: 'SET_AMOUNT'
+        setAmount: 'SET_AMOUNT',
+        setPremium: 'SET_PREMIUM'
       })
+    },
+    watch: {
+      plan: {
+        handler(n) {
+          this.durationText = goods[number].plan[n].duration
+          this.duration = goods[number].plan[n].value
+          // 保障期限更改是否有附加险,年龄上下线控制 
+          if(this.duration === 30) {
+            this.additionShow = false
+            this.addition = 1
+            this.additionDurationText = ''
+            this.additionDuration = ''
+            if(!this.area.level2 || (this.area.level2 && cityArr.indexOf(this.area.level2) > -1)) {
+              this.maxAge = 40
+              this.minAge = 0
+            }else{
+              this.maxAge = 40
+              this.minAge = 18
+            }
+          }else{
+            this.additionShow = true
+            if(this.duration === 70) {
+              this.additionDurationText = '至70周岁'
+              this.additionDuration = 70
+
+              this.maxAge = 50
+              this.minAge = 0
+            }else{
+              this.additionDurationText = '至80周岁'
+              this.additionDuration = 80
+              this.maxAge = 45
+              this.minAge = 0
+            }
+          }
+
+          if(this.age < this.minAge || this.age > this.maxAge) {
+            this.setAge(this.minAge)
+            this.setBirthday('')
+          }
+
+          // 更改交费期间
+          if(this.duration === 30 || this.duration === 105) {
+            this.paymentYearList = [
+              {
+                text: '30年',
+                value: '30'
+              }
+            ]
+            this.paymentYear = '30'
+          }else{
+            if(this.age > 40) {
+              this.paymentYearList = [
+                {
+                  text: '至70周岁',
+                  value: '70'
+                }
+              ]
+              this.paymentYear = '70'
+            }else{
+              this.paymentYearList = [
+                {
+                  text: '30年',
+                  value: '30'
+                },
+                {
+                  text: '至70周岁',
+                  value: '70'
+                }
+              ]
+              this.paymentYear = '请选择'
+            }
+          }
+
+          this.changeAmountList(this.area, this.age)
+
+          this.calculatePremium()
+        },
+        immediate: true
+      },
+      age(n) {
+        if(this.duration === 70) {
+          if(n > 40) {
+            this.paymentYearList = [
+              {
+                text: '至70周岁',
+                value: '70'
+              }
+            ]
+            this.paymentYear = '70'
+          }else{
+            this.paymentYearList = [
+              {
+                text: '30年',
+                value: '30'
+              },
+              {
+                text: '至70周岁',
+                value: '70'
+              }
+            ]
+          }
+        }
+        this.changeAmountList(this.area, n)
+
+        this.calculatePremium()
+      },
+      area(n) {
+        this.changeAmountList(n, this.age)
+
+        this.calculatePremium()
+      },
+      sex() {
+        this.calculatePremium()
+      },
+      amount() {
+        this.calculatePremium()
+      },
+      paymentYear(n) {
+        if(this.duration === 70) {
+          if(n === 30) {
+            this.maxAge = 40 
+            this.minAge = 0
+          }else{
+            this.maxAge = 50 
+            this.minAge = 0
+          }
+          if(this.age < this.minAge || this.age > this.maxAge) {
+            this.setAge(this.minAge)
+            this.setBirthday('')
+            this.$createDialog({
+              type: 'alert',
+              title: '',
+              content: '交费期间为30年时，最大年龄为40周岁，请重新选择年龄'
+            }).show()
+          }
+        }
+        
+        this.calculatePremium()
+      },
+      addition() {
+        this.calculatePremium()
+      }
     },
     components: {
       Loading,

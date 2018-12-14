@@ -2,7 +2,7 @@
   <div @click='showDatePicker' class="selectBar border-bottom">
     <div class="tit">{{tit}}</div>
     <div class="select">
-      <span :class="{'primary': selectedText === '请选择' }">{{selectedText}}({{age}}周岁)</span><i class="el-icon-caret-right"></i>
+      <span :class="{'primary': selectedText === '请选择' }">{{selectedText}} <span v-show="selectedText !== '请选择'">({{age}}周岁)</span></span><i class="el-icon-caret-right"></i>
     </div>
   </div>
 </template>
@@ -152,6 +152,19 @@ export default {
       this.$emit('setAge', this.getAgeByBirth(this.selectedText))
     },
     cancelHandle() {
+    }
+  },
+  watch: {
+    maxAge() {
+      this.datePicker = null
+    },
+    minAge() {
+      this.datePicker = null
+    },
+    updateAge() {
+      if(!this.birthday) {
+        this.selectedText = '请选择'
+      }
     }
   }
 }

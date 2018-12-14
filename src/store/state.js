@@ -2,7 +2,7 @@ const state = {
   plan: 0,
   age: 0,
   birthday: '',
-  sex: 0,
+  sex: 1,
   appName: '',
   appIdNo: '',
   appAddress: '',

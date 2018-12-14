@@ -39,6 +39,13 @@ export default {
   },
   methods: {
     _initPickerData() {
+      // 上一次的选择超出了这的数组，恢复
+      if (this.selected === '请选择' || this.selectedIndex[0] > this.data.length) {
+        this.selectedIndex[0] = 0
+        this.selectedText = '请选择'
+        return
+      }
+
       this.data.forEach((item, index) => {
         if(item.value === this.selected){
           this.selectedIndex[0] = index
@@ -68,6 +75,15 @@ export default {
       this.$emit('select', selectedVal.join(', '))
     },
     cancelHandle() {
+    }
+  },
+  watch: {
+    selected(n) {
+      this._initPickerData()
+    },
+    data() {
+      this.picker = null
+      this._initPickerData()
     }
   }
 }

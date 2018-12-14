@@ -44,10 +44,11 @@ export default {
       })
     },
     _move(index, duration) {
-      const dom = this.$refs.list.children[index]
+      let that = this
+      const dom = that.$refs.list.children[index]
       const domLeft = dom.offsetLeft
       const domWidth = dom.offsetWidth
-      let cloud = this.$refs.cloud
+      let cloud = that.$refs.cloud
       cloud.style.width = domWidth + 'px'
       cloud.style.transition = `all ${duration}`
       cloud.style[transform] = `translate3d(${domLeft}px,0,0)`
@@ -87,5 +88,8 @@ export default {
       width: 100%
     li
       flex: 0 0 auto
+      height: 16px
+      line-height: 16px
       padding: 0 20px
+      box-sizing: border-box
 </style>

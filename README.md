@@ -19,32 +19,32 @@ a标签添加ondragstart="return false"
 
 ## prop数据默认类型
 
-`age: {
-	type: Number,
-	default: 18
-},
-name: {
-	type: String,
-	default: '小明'
-},
-loading: {
-	type: Boolean,
-	default: false
-},
-data: {
-	type: Array,
-	default: () => {
-		return []
-	}
-},
-fun: {
-	type: Function,
-	default: () => () => {}
-},
-obj: {
-	type: Object,
-	default: () => ({})
-}`
+    age: {
+    	type: Number,
+    	default: 18
+    },
+    name: {
+    	type: String,
+    	default: '小明'
+    },
+    loading: {
+    	type: Boolean,
+    	default: false
+    },
+    data: {
+    	type: Array,
+    	default: () => {
+    		return []
+    	}
+    },
+    fun: {
+    	type: Function,
+    	default: () => () => {}
+    },
+    obj: {
+    	type: Object,
+    	default: () => ({})
+    }
 
 [type]支持多个数据格式，用|分隔
 
@@ -158,4 +158,29 @@ methods: {
 ##css3动画
 
 使用v-show,不能使用v-if，v-if在安卓手机上面会卡顿，v-if重绘消耗性能
+
+##页面加载时的蒙层
+
+common/js/ajax-loading.js 暴露 bus
+
+App.vue 中引入
+
+弊端：所有的ajax都会执行，不合适
+
+使用官网的执行多个请求
+
+`
+function getUserAccount() {
+  return axios.get('/user/12345');
+}
+
+function getUserPermissions() {
+  return axios.get('/user/12345/permissions');
+}
+
+axios.all([getUserAccount(), getUserPermissions()])
+  .then(axios.spread(function (acct, perms) {
+    // 两个请求现在都执行完成
+  }))
+`
 
